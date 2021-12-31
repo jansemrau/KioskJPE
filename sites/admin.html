@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="admin.css">
+    <title>Gottesdienst</title>
+</head>
+<body>
+    <div class="container">
+        <div id="form-container" class="form-container">
+            <form id="participantForm" class="form" action="" method="post" onsubmit="onsubmit=newParticipant();return false;">
+                <label class="label" for="firstname">Vorname</label>
+                <input class="input" type="text" id="firstname" name="firstname">
+                <label class="label" for="lastname">Nachname</label>
+                <input class="input" type="text" id="lastname" name="lastname">
+                <label class="label" for="guthaben">Guthaben</label>
+                <input class="input" type="text" id="guthaben" name="guthaben">
+                <input class="button" type="submit" value="Registrieren">
+            </form>
+            <form id="productForm" class="form" action="" method="post" onsubmit="onsubmit=newProduct();return false;">
+                <label class="label" for="name">Name</label>
+                <input class="input" type="text" id="name" name="name">
+                <label class="label" for="price">Preis in €</label>
+                <input class="input" type="text" id="price" name="price">
+                <input class="button" type="submit" value="Einfügen">
+            </form>
+        </div>
+        <table id="tabelleTeilnehmer">
+            <thead>
+                <tr>
+                    <th>Vorname</th>
+                    <th>Nachname</th>
+                    <th>Guthaben</th>
+                </tr>
+            </thead>
+        </table>
+        <hr class="hr">
+        <table id="tabelleProdukte">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Preis</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <script src="admin.js"></script>
+</body>
+</html>
