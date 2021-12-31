@@ -1,0 +1,80 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/** Breakpoint: 576px+ */
+@media (min-width: 36em) {
+}
+
+/** Breakpoint: 768px+ */
+@media (min-width: 48em) {
+}
+
+/** Breakpoint: 992px+ */
+@media (min-width: 62em) {
+}
+
+/** Breakpoint: 1200px+ */
+@media (min-width: 75em) {
+}
+
+/** Breakpoint: 1400px+ */
+@media (min-width: 87.5em) {
+}
+
+.container {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-areas:
+        "repertoire"
+        "gottesdienst"
+        "abrechnung";
+}
+@media (min-width: 62em) {
+    .container {
+        width: 100vw;
+        height: 100vh;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1.5fr 0.5fr;
+        grid-template-areas:
+            "picture picture picture"
+            "repertoire gottesdienst abrechnung";
+    }
+}
+
+#picture {
+    grid-area: picture;
+    background-color: red;
+    background-image: url("./images/IMG_6255.jpg");
+}
+#repertoire {
+    grid-area: repertoire;
+}
+#gottesdienst {
+    grid-area: gottesdienst;
+}
+#abrechnung {
+    grid-area: abrechnung;
+}
+
+.select-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #014153;
+    border: 0.25rem solid #ed6a4e;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 4rem;
+    color: #ed6a4e;
+    text-decoration: none;
+}
+.select-button:hover {
+    border: 0.25rem solid white;
+}
