@@ -8,7 +8,7 @@ let products = [];
 let currentId = 0;
 
 const getAllParticipants = async () => {
-    await fetch("http://localhost:8000/kiosk/getAllParticipants", {
+    await fetch("http://raspi:8000/kiosk/getAllParticipants", {
         method: "Get",
         headers: {
             "Content-Type": "application/json",
@@ -29,7 +29,7 @@ const getAllParticipants = async () => {
 
 const speichern = async () => {
     console.log(currentId);
-    await fetch(`http://localhost:8000/kiosk/participants/${currentId}`, {
+    await fetch(`http://raspi:8000/kiosk/participants/${currentId}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -51,7 +51,7 @@ const speichern = async () => {
 };
 
 const getAllProducts = async () => {
-    await fetch("http://localhost:8000/kiosk/getAllProducts", {
+    await fetch("http://raspi:8000/kiosk/getAllProducts", {
         method: "Get",
         headers: {
             "Content-Type": "application/json",

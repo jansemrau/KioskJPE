@@ -19,7 +19,7 @@ const newParticipant = async () => {
     } else {
         parseFloat(guthaben);
     }
-    await fetch("http://localhost:8000/kiosk/newParticipant", {
+    await fetch("http://raspi:8000/kiosk/newParticipant", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -42,7 +42,7 @@ const newParticipant = async () => {
 };
 
 const deleteParticipant = async (id) => {
-    await fetch(`http://localhost:8000/kiosk/participants/${id}`, {
+    await fetch(`http://raspi:8000/kiosk/participants/${id}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -56,7 +56,7 @@ const deleteParticipant = async (id) => {
 };
 
 const getAllParticipants = async () => {
-    await fetch("http://localhost:8000/kiosk/getAllParticipants", {
+    await fetch("http://raspi:8000/kiosk/getAllParticipants", {
         method: "Get",
         headers: {
             "Content-Type": "application/json",
@@ -110,7 +110,7 @@ const zeileEinfuegenTeilnehmer = () => {
 };
 
 const getAllProductsTable = async () => {
-    await fetch("http://localhost:8000/kiosk/getAllProducts", {
+    await fetch("http://raspi:8000/kiosk/getAllProducts", {
         method: "Get",
         headers: {
             "Content-Type": "application/json",
@@ -167,7 +167,7 @@ const newProduct = async () => {
     } else {
         parseFloat(price);
     }
-    await fetch("http://localhost:8000/kiosk/newProduct", {
+    await fetch("http://raspi:8000/kiosk/newProduct", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -189,7 +189,7 @@ const newProduct = async () => {
 };
 
 const deleteProduct = async (id) => {
-    await fetch(`http://localhost:8000/kiosk/products/${id}`, {
+    await fetch(`http://raspi:8000/kiosk/products/${id}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",

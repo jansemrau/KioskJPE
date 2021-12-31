@@ -51,6 +51,8 @@
 
 #suessigkeitenContainer {
     grid-area: suessigkeiten;
+}
+.suessigkeitenContainer {
     background-color: #002834;
     display: flex;
     justify-content: stretch;
@@ -59,6 +61,8 @@
 }
 #buchhaltung {
     grid-area: buchhaltung;
+}
+.buchhaltung-container {
     background-color: #014153;
     display: flex;
     flex-direction: column;
@@ -74,8 +78,16 @@
     background-color: #014153;
     overflow: auto;
 }
+.teilnehmer {
+    background-color: #014153;
+    overflow: auto;
+}
 #einkauf {
     grid-area: einkauf;
+    background-color: #002834;
+    overflow: auto;
+}
+.einkauf {
     background-color: #002834;
     overflow: auto;
 }
@@ -152,4 +164,8 @@ caption {
 .select-button:hover {
     border: 0.25rem solid white;
     cursor: pointer;
+}
+
+.lightMode {
+    background-color: white;
 }
