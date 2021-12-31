@@ -9,8 +9,7 @@ const bodyParser = require("body-parser");
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
-const gottesdienstRouter = require("./routes/gottesdienstRoutes");
-const userRouter = require("./routes/userRoutes");
+const kioskRouter = require("./routes/kioskRouter");
 
 const app = express();
 
@@ -35,7 +34,7 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
         "Access-Control-Allow-Methods",
-        "GET,HEAD,OPTIONS,POST,PUT,DELETE"
+        "GET,HEAD,OPTIONS,POST,PUT,DELETE, PATCH"
     );
     res.header(
         "Access-Control-Allow-Headers",
@@ -78,8 +77,7 @@ app.use((req, res, next) => {
 });
 
 // 3) ROUTES
-app.use("/gottesdienste", gottesdienstRouter);
-app.use("/users", userRouter);
+app.use("/kiosk", kioskRouter);
 
 app.all("*", (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

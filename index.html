@@ -10,18 +10,16 @@
 <body>
     <div class="container">
         <div id="suessigkeitenContainer">
-            <button class="suessigkeit" onclick="inDenEinkaufswagen(1, 'Lutscher', 0.2)">Lutscher <br> 20 Cent</button>
-            <button class="suessigkeit" onclick="inDenEinkaufswagen(2, 'Erdbeeren', 0.1)">Erdbeeren <br> 10 Cent</button>
-            <button class="suessigkeit" onclick="inDenEinkaufswagen(3, 'Getränk', 1)">Getränk <br> 1€</button>
-            <button class="suessigkeit" onclick="inDenEinkaufswagen(4, 'Mäuse', 0.2)">Mäuse <br> 20 Cent</button>
         </div>
         <div id="buchhaltung">
-            <p class="buchhaltungsElement" id="guthabenAlt">Alt: 0 €</p>
-            <p class="buchhaltungsElement" id="guthabenNeu">Neu: 0 €</p>
-            <p class="buchhaltungsElement" id="sum">Sum: 0 €</p>
+            <h2 class="buchhaltung-name" id="participantName"></h2>
+            <div class="buchhaltung">
+                <p class="buchhaltungsElement" id="guthabenAlt">Alt: 0 €</p>
+                <p class="buchhaltungsElement" id="guthabenNeu">Neu: 0 €</p>
+                <p class="buchhaltungsElement" id="sum">Summe: 0 €</p>
+            </div>
         </div>
         <div id="teilnehmer">
-                <button id="zeile">Zeile hinzufügen</button>
             <table id="tabelleTeilnehmer">
                 <thead>
                 <tr>
@@ -41,6 +39,9 @@
                     </tr>
                 </thead>
             </table>
+        </div>
+        <div id="speichern">
+            <button class="select-button" onclick="speichern()">Kaufen</button>
         </div>
     </div>
     <script src="index.js"></script>
