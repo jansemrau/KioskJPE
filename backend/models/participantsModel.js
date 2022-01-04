@@ -14,6 +14,9 @@ const participantsSchema = new mongoose.Schema(
             type: Number,
             required: [true, "A Participant must have a guthaben"],
         },
+        signature: {
+            type: String,
+        },
     },
     { collection: "Participants" }
 );

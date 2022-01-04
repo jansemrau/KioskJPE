@@ -7,8 +7,54 @@ let participants = [];
 let products = [];
 let currentId = 0;
 
+function toggleLightDark() {
+    let elementsWhite = [];
+    let elementsGray = [];
+    let elementsText = [];
+    elementsGray.push(
+        document.getElementsByClassName("suessigkeitenContainer")[0]
+    );
+
+    elementsGray.push(document.getElementsByClassName("einkauf")[0]);
+    elementsWhite.push(
+        document.getElementsByClassName("buchhaltung-container")[0]
+    );
+    elementsWhite.push(document.getElementsByClassName("teilnehmer")[0]);
+    elementsWhite.push(document.getElementsByClassName("settings")[0]);
+
+    let buttons = document.getElementsByClassName("button");
+    for (let i = 0; i < buttons.length; i++) {
+        elementsText.push(buttons[i]);
+    }
+
+    let suessigkeiten = document.getElementsByClassName("suessigkeit");
+    for (let i = 0; i < suessigkeiten.length; i++) {
+        elementsText.push(suessigkeiten[i]);
+    }
+    let buchhaltungsElement = document.getElementsByClassName(
+        "buchhaltungsElement"
+    );
+    for (let i = 0; i < buchhaltungsElement.length; i++) {
+        elementsText.push(buchhaltungsElement[i]);
+    }
+    let tables = document.getElementsByTagName("table");
+    for (let i = 0; i < tables.length; i++) {
+        elementsText.push(tables[i]);
+    }
+    elementsText.push(document.getElementsByClassName("buchhaltung-name")[0]);
+    elementsWhite.forEach((e) => {
+        e.classList.toggle("lightModeWhite");
+    });
+    elementsGray.forEach((e) => {
+        e.classList.toggle("lightModeGray");
+    });
+    elementsText.forEach((e) => {
+        e.classList.toggle("lightModeText");
+    });
+}
+
 const getAllParticipants = async () => {
-    await fetch("http://raspi:8000/kiosk/getAllParticipants", {
+    await fetch("http://localhost:8000/kiosk/getAllParticipants", {
         method: "Get",
         headers: {
             "Content-Type": "application/json",
@@ -29,7 +75,7 @@ const getAllParticipants = async () => {
 
 const speichern = async () => {
     console.log(currentId);
-    await fetch(`http://raspi:8000/kiosk/participants/${currentId}`, {
+    await fetch(`http://localhost:8000/kiosk/participants/${currentId}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -51,7 +97,7 @@ const speichern = async () => {
 };
 
 const getAllProducts = async () => {
-    await fetch("http://raspi:8000/kiosk/getAllProducts", {
+    await fetch("http://localhost:8000/kiosk/getAllProducts", {
         method: "Get",
         headers: {
             "Content-Type": "application/json",

@@ -8,7 +8,7 @@
     <title>Kiosk JPE - Admin</title>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="container">
         <div id="form-container" class="form-container">
             <form id="participantForm" class="form" action="" method="post" onsubmit="onsubmit=newParticipant();return false;">
                 <label class="label" for="firstname">Vorname</label>
@@ -33,6 +33,7 @@
                     <th>Vorname</th>
                     <th>Nachname</th>
                     <th>Guthaben</th>
+                    <th>Aktion</th>
                 </tr>
             </thead>
         </table>
@@ -45,6 +46,26 @@
                 </tr>
             </thead>
         </table>
+    </div>
+    <div id="myModal" class="Modal is-hidden is-visuallyHidden">
+        <!-- Modal content -->
+        <div class="Modal-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12" id="canvasContainer">
+                        <canvas id="sig-canvas">
+                        </canvas>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button class="button button--inline" id="sig-submitBtn">Auszahlen</button>
+                        <button class="button button--inline" id="sig-clearBtn">Unterschrift neu</button>
+                        <button class="button button--inline" id="sig-cancellationBtn">Abbruch</button>
+                    </div>
+                </div>
+    
+        </div>
     </div>
     <script src="admin.js"></script>
 </body>
