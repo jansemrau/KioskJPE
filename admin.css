@@ -55,6 +55,10 @@
         text-align: left;
     }
 }
+.headline--small {
+    font-size: 1.5rem;
+    padding: 0.5rem 0;
+}
 
 .text {
     color: #ed6a4e;
@@ -94,12 +98,22 @@
     font-size: 1rem;
     color: white;
     text-decoration: none;
+    cursor: pointer;
 }
 .button:hover {
     border: 0.125rem solid white;
 }
 .button--inline {
     display: inline-block;
+}
+.button--ausgezahlt {
+    background-color: #666;
+    border: none;
+    cursor: initial;
+}
+.button--ausgezahlt:hover {
+    border: none;
+    cursor: initial;
 }
 
 .datum {
@@ -123,7 +137,7 @@
     content: "";
     display: block;
     width: 100%;
-    height: 0.25rem;
+    height: 0.1rem;
     background: #014153;
     margin-top: 1rem;
     box-shadow: 0 0 0.25rem rgba(0, 0, 0, 0.5);
@@ -254,7 +268,7 @@ caption {
 .hr {
     display: block;
     width: 100%;
-    height: 0.25rem;
+    height: 0.5rem;
     background: #014153;
     margin-top: 1rem;
     margin-bottom: 1rem;
@@ -310,4 +324,12 @@ caption {
 .is-blurred {
     filter: blur(2px);
     -webkit-filter: blur(2px);
+}
+
+#modal-image-container {
+    display: none;
+}
+.modal-image {
+    width: 100%;
+    height: 100%;
 }

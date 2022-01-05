@@ -7,7 +7,6 @@ let rowIdTeilnehmer = 0;
 let rowIdEinkauf = 0;
 let participants = [];
 let products = [];
-let currentId = 0;
 
 const newParticipant = async () => {
     const firstname = document.getElementById("firstname").value;
@@ -31,7 +30,6 @@ const newParticipant = async () => {
         }),
     }).then((response) => {
         response.json().then((parsedJson) => {
-            console.log(parsedJson);
             if (parsedJson.status !== "success") {
                 errorElement(parsedJson.message);
             } else {
@@ -48,15 +46,12 @@ const deleteParticipant = async (id) => {
             "Content-Type": "application/json",
         },
     }).then((response) => {
-        response.json().then((response) => {
-            console.log(response);
-        });
         location.reload();
     });
 };
 
-const auszahlen = async (dataUrl) => {
-    console.log(currentId);
+const auszahlen = async (currentId, dataUrl) => {
+    let datum = Date.now();
     await fetch(`http://localhost:8000/kiosk/participants/${currentId}`, {
         method: "PATCH",
         headers: {
@@ -64,15 +59,14 @@ const auszahlen = async (dataUrl) => {
         },
         body: JSON.stringify({
             signature: dataUrl,
+            datumAuszahlung: datum,
         }),
     }).then((response) => {
         response.json().then((parsedJson) => {
-            console.log(parsedJson);
             if (parsedJson.status !== "success") {
                 errorElement(parsedJson.message);
             } else {
-                clear();
-                getAllParticipants();
+                location.reload();
             }
         });
     });
@@ -86,11 +80,9 @@ const getAllParticipants = async () => {
         },
     }).then((response) => {
         response.json().then((parsedJson) => {
-            console.log(parsedJson);
             if (parsedJson.status !== "success") {
                 errorElement(parsedJson.message);
             } else {
-                console.log(parsedJson.data.participants);
                 participants = parsedJson.data.participants;
                 zeileEinfuegenTeilnehmer();
             }
@@ -111,10 +103,28 @@ const zeileEinfuegenTeilnehmer = () => {
             zelle2 = reihe.insertCell();
         zelle2.innerHTML = nachname;
 
-        let gehalt = el.guthaben,
-            zelle3 = reihe.insertCell();
-        zelle3.innerHTML = gehalt;
-
+        if (!el.signature) {
+            let gehalt = el.guthaben,
+                zelle3 = reihe.insertCell();
+            zelle3.innerHTML = `${gehalt} €`;
+        } else {
+            let datumAlt = new Date(el.datumAuszahlung);
+            let datum =
+                ("0" + datumAlt.getDate()).slice(-2) +
+                "." +
+                ("0" + (datumAlt.getMonth() + 1)).slice(-2) +
+                "." +
+                datumAlt.getFullYear() +
+                ", " +
+                ("0" + datumAlt.getHours()).slice(-2) +
+                ":" +
+                ("0" + datumAlt.getMinutes()).slice(-2) +
+                " Uhr";
+            let gehalt = el.guthaben,
+                zelle3 = reihe.insertCell();
+            zelle3.innerHTML = `${gehalt} € ausgezahlt am ${datum}`;
+        }
+        reihe.setAttribute("personId", el._id);
         //Aktion
         let deleteButton = document.createElement("button");
         deleteButton.setAttribute("class", "button");
@@ -130,23 +140,63 @@ const zeileEinfuegenTeilnehmer = () => {
         });
 
         let auszahlenButton = document.createElement("button");
-        auszahlenButton.setAttribute("class", "button");
-        auszahlenButton.innerHTML = "auszahlen";
-        auszahlenButton.addEventListener("click", function () {
-            if (
-                confirm(
-                    "Bist du dir sicher, dass du den Betrag auszahlen möchtest?"
-                )
-            ) {
+        if (el.signature) {
+            auszahlenButton.setAttribute("class", "button button--ausgezahlt");
+            auszahlenButton.innerHTML = "ausgezahlt";
+            auszahlenButton.addEventListener("click", function () {
                 modal.className = "Modal is-visuallyHidden";
                 setTimeout(function () {
                     container.className = "container is-blurred";
                     modal.className = "Modal";
                 }, 100);
                 container.parentElement.className = "ModalOpen";
-                signature();
-            }
-        });
+                var image = new Image();
+                image.src = el.signature;
+                let canvasContainer = document.getElementById("modal-canvas");
+                canvasContainer.style.display = "none";
+                let imageContainer = document.getElementById(
+                    "modal-image-container"
+                );
+                imageContainer.style.display = "block";
+                let images = document.getElementById("modal-image");
+                images.style.display = "block";
+                images.appendChild(image);
+
+                let closeButton = document.getElementById(
+                    "sig-cancellationBtnImage"
+                );
+
+                // Close the modal
+                closeButton.onclick = function () {
+                    modal.className = "Modal is-hidden is-visuallyHidden";
+                    container.className = "container";
+                    container.parentElement.className = "";
+                    let modalImageContainer =
+                        document.getElementById("modal-image");
+                    modalImageContainer.removeChild(
+                        modalImageContainer.lastChild
+                    );
+                };
+            });
+        } else {
+            auszahlenButton.setAttribute("class", "button");
+            auszahlenButton.innerHTML = "auszahlen";
+            auszahlenButton.addEventListener("click", function () {
+                if (
+                    confirm(
+                        "Bist du dir sicher, dass du den Betrag auszahlen möchtest?"
+                    )
+                ) {
+                    modal.className = "Modal is-visuallyHidden";
+                    setTimeout(function () {
+                        container.className = "container is-blurred";
+                        modal.className = "Modal";
+                    }, 100);
+                    container.parentElement.className = "ModalOpen";
+                    signature(el._id);
+                }
+            });
+        }
 
         let zelle4 = reihe.insertCell();
         zelle4.appendChild(deleteButton);
@@ -167,11 +217,9 @@ const getAllProductsTable = async () => {
         },
     }).then((response) => {
         response.json().then((parsedJson) => {
-            console.log(parsedJson);
             if (parsedJson.status !== "success") {
                 errorElement(parsedJson.message);
             } else {
-                console.log(parsedJson.data.products);
                 productsTable = parsedJson.data.products;
                 createProductsTable();
             }
@@ -182,7 +230,6 @@ const getAllProductsTable = async () => {
 function createProductsTable() {
     const tabelle = document.getElementById("tabelleProdukte");
     // schreibe Tabellenzeile
-    console.log("Produkte" + productsTable);
     productsTable.forEach((el) => {
         const reihe = tabelle.insertRow(-1);
         let name = el.name,
@@ -193,18 +240,24 @@ function createProductsTable() {
             zelle2 = reihe.insertCell();
         zelle2.innerHTML = price;
 
-        reihe.setAttribute("rowId", rowIdProducts++);
-        reihe.setAttribute("ProductId", el._id);
-
-        reihe.addEventListener("click", function () {
+        let deleteButton = document.createElement("button");
+        deleteButton.setAttribute("class", "button");
+        deleteButton.innerHTML = "Löschen";
+        deleteButton.addEventListener("click", function () {
             if (
                 confirm(
-                    "Bist du dir sicher, dass du das Produkt löschen möchtest?"
+                    "Bist du dir sicher, dass du dieses Produkt löschen möchtest?"
                 )
             ) {
                 deleteProduct(el._id);
             }
         });
+
+        let zelle3 = reihe.insertCell();
+        zelle3.appendChild(deleteButton);
+
+        reihe.setAttribute("rowId", rowIdProducts++);
+        reihe.setAttribute("ProductId", el._id);
     });
 }
 
@@ -228,7 +281,6 @@ const newProduct = async () => {
         }),
     }).then((response) => {
         response.json().then((parsedJson) => {
-            console.log(parsedJson);
             if (parsedJson.status !== "success") {
                 errorElement(parsedJson.message);
             } else {
@@ -245,16 +297,15 @@ const deleteProduct = async (id) => {
             "Content-Type": "application/json",
         },
     }).then((response) => {
-        console.log(response);
+        location.reload();
     });
-    location.reload();
 };
 
 getAllParticipants();
 getAllProductsTable();
 
 //Signature
-const signature = () => {
+const signature = (currentId) => {
     window.requestAnimFrame = (function (callback) {
         return (
             window.requestAnimationFrame ||
@@ -426,7 +477,7 @@ const signature = () => {
         "click",
         function (e) {
             var dataUrl = canvas.toDataURL();
-            console.log(auszahlen(dataUrl));
+            auszahlen(currentId, dataUrl);
         },
         false
     );

@@ -17,6 +17,9 @@ const participantsSchema = new mongoose.Schema(
         signature: {
             type: String,
         },
+        datumAuszahlung: {
+            type: Date,
+        },
     },
     { collection: "Participants" }
 );

@@ -167,13 +167,13 @@ caption {
 
 .lightModeWhite {
     background-color: white;
-    color: black;
+    color: #014153;
 }
 .lightModeGray {
     background-color: #edeaea;
-    color: black;
+    color: #014153;
 }
 .lightModeText {
-    color: black;
+    color: #014153;
     background-color: white;
 }

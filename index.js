@@ -7,52 +7,6 @@ let participants = [];
 let products = [];
 let currentId = 0;
 
-function toggleLightDark() {
-    let elementsWhite = [];
-    let elementsGray = [];
-    let elementsText = [];
-    elementsGray.push(
-        document.getElementsByClassName("suessigkeitenContainer")[0]
-    );
-
-    elementsGray.push(document.getElementsByClassName("einkauf")[0]);
-    elementsWhite.push(
-        document.getElementsByClassName("buchhaltung-container")[0]
-    );
-    elementsWhite.push(document.getElementsByClassName("teilnehmer")[0]);
-    elementsWhite.push(document.getElementsByClassName("settings")[0]);
-
-    let buttons = document.getElementsByClassName("button");
-    for (let i = 0; i < buttons.length; i++) {
-        elementsText.push(buttons[i]);
-    }
-
-    let suessigkeiten = document.getElementsByClassName("suessigkeit");
-    for (let i = 0; i < suessigkeiten.length; i++) {
-        elementsText.push(suessigkeiten[i]);
-    }
-    let buchhaltungsElement = document.getElementsByClassName(
-        "buchhaltungsElement"
-    );
-    for (let i = 0; i < buchhaltungsElement.length; i++) {
-        elementsText.push(buchhaltungsElement[i]);
-    }
-    let tables = document.getElementsByTagName("table");
-    for (let i = 0; i < tables.length; i++) {
-        elementsText.push(tables[i]);
-    }
-    elementsText.push(document.getElementsByClassName("buchhaltung-name")[0]);
-    elementsWhite.forEach((e) => {
-        e.classList.toggle("lightModeWhite");
-    });
-    elementsGray.forEach((e) => {
-        e.classList.toggle("lightModeGray");
-    });
-    elementsText.forEach((e) => {
-        e.classList.toggle("lightModeText");
-    });
-}
-
 const getAllParticipants = async () => {
     await fetch("http://localhost:8000/kiosk/getAllParticipants", {
         method: "Get",
@@ -61,11 +15,9 @@ const getAllParticipants = async () => {
         },
     }).then((response) => {
         response.json().then((parsedJson) => {
-            console.log(parsedJson);
             if (parsedJson.status !== "success") {
                 errorElement(parsedJson.message);
             } else {
-                console.log(parsedJson.data.participants);
                 participants = parsedJson.data.participants;
                 zeileEinfuegenTeilnehmer();
             }
@@ -74,7 +26,6 @@ const getAllParticipants = async () => {
 };
 
 const speichern = async () => {
-    console.log(currentId);
     await fetch(`http://localhost:8000/kiosk/participants/${currentId}`, {
         method: "PATCH",
         headers: {
@@ -85,7 +36,6 @@ const speichern = async () => {
         }),
     }).then((response) => {
         response.json().then((parsedJson) => {
-            console.log(parsedJson);
             if (parsedJson.status !== "success") {
                 errorElement(parsedJson.message);
             } else {
@@ -104,24 +54,18 @@ const getAllProducts = async () => {
         },
     }).then((response) => {
         response.json().then((parsedJson) => {
-            console.log(parsedJson);
             if (parsedJson.status !== "success") {
                 errorElement(parsedJson.message);
             } else {
-                console.log(parsedJson.data.products);
                 products = parsedJson.data.products;
                 createProducts();
-                createProductsTable();
+                toggleLightDark();
             }
         });
     });
 };
 
-getAllParticipants();
-getAllProducts();
-
-const createProducts = () => {
-    console.log(products);
+const createProducts = async () => {
     const suessigkeitenContainer = document.getElementById(
         "suessigkeitenContainer"
     );
@@ -140,31 +84,44 @@ const zeileEinfuegenTeilnehmer = () => {
     const tabelle = document.getElementById("tabelleTeilnehmer");
     // schreibe Tabellenzeile
     participants.forEach((el) => {
-        const reihe = tabelle.insertRow(-1);
-        let vorname = el.firstname,
-            zelle1 = reihe.insertCell();
-        zelle1.innerHTML = vorname;
+        if (!el.signature) {
+            const reihe = tabelle.insertRow(-1);
+            let vorname = el.firstname,
+                zelle1 = reihe.insertCell();
+            zelle1.innerHTML = vorname;
 
-        let nachname = el.lastname,
-            zelle2 = reihe.insertCell();
-        zelle2.innerHTML = nachname;
+            let nachname = el.lastname,
+                zelle2 = reihe.insertCell();
+            zelle2.innerHTML = nachname;
 
-        let gehalt = el.guthaben,
-            zelle3 = reihe.insertCell();
-        zelle3.innerHTML = gehalt;
+            let gehalt = el.guthaben,
+                zelle3 = reihe.insertCell();
+            zelle3.innerHTML = `${gehalt} €`;
 
-        reihe.setAttribute("rowId", rowIdTeilnehmer++);
-        reihe.setAttribute("personId", el._id);
-        reihe.setAttribute("guthaben", el.guthaben);
-        reihe.setAttribute("participantName", el.firstname + " " + el.lastname);
+            reihe.setAttribute("rowId", rowIdTeilnehmer++);
+            reihe.setAttribute("personId", el._id);
+            reihe.setAttribute("guthaben", el.guthaben);
+            reihe.setAttribute(
+                "participantName",
+                el.firstname + " " + el.lastname
+            );
 
-        reihe.addEventListener("click", function () {
-            if (rowIdEinkauf > 0) {
-                if (
-                    confirm(
-                        "Bist du dir sicher? Du hast noch nicht gespeichert!"
-                    )
-                ) {
+            reihe.addEventListener("click", function () {
+                if (rowIdEinkauf > 0) {
+                    if (
+                        confirm(
+                            "Bist du dir sicher? Du hast noch nicht gespeichert!"
+                        )
+                    ) {
+                        clearEinkauf();
+                        auswahl(
+                            this.getAttribute("personId"),
+                            this.getAttribute("guthaben"),
+                            this.getAttribute("participantName")
+                        );
+                        currentId = this.getAttribute("personId");
+                    }
+                } else {
                     clearEinkauf();
                     auswahl(
                         this.getAttribute("personId"),
@@ -173,17 +130,8 @@ const zeileEinfuegenTeilnehmer = () => {
                     );
                     currentId = this.getAttribute("personId");
                 }
-            } else {
-                console.log(currentId);
-                clearEinkauf();
-                auswahl(
-                    this.getAttribute("personId"),
-                    this.getAttribute("guthaben"),
-                    this.getAttribute("participantName")
-                );
-                currentId = this.getAttribute("personId");
-            }
-        });
+            });
+        }
     });
 };
 
@@ -274,3 +222,52 @@ const ausDemEinkaufswagen = (preis) => {
     document.getElementById("guthabenNeu").innerHTML = `Neu: ${guthabenNeu} €`;
     document.getElementById("sum").innerHTML = `Sum: ${sum} €`;
 };
+
+function toggleLightDark() {
+    let elementsWhite = [];
+    let elementsGray = [];
+    let elementsText = [];
+    elementsGray.push(
+        document.getElementsByClassName("suessigkeitenContainer")[0]
+    );
+
+    elementsGray.push(document.getElementsByClassName("einkauf")[0]);
+    elementsWhite.push(
+        document.getElementsByClassName("buchhaltung-container")[0]
+    );
+    elementsWhite.push(document.getElementsByClassName("teilnehmer")[0]);
+    elementsWhite.push(document.getElementsByClassName("settings")[0]);
+
+    let buttons = document.getElementsByClassName("button");
+    for (let i = 0; i < buttons.length; i++) {
+        elementsText.push(buttons[i]);
+    }
+
+    let suessigkeiten = document.getElementsByClassName("suessigkeit");
+    for (let i = 0; i < suessigkeiten.length; i++) {
+        elementsText.push(suessigkeiten[i]);
+    }
+    let buchhaltungsElement = document.getElementsByClassName(
+        "buchhaltungsElement"
+    );
+    for (let i = 0; i < buchhaltungsElement.length; i++) {
+        elementsText.push(buchhaltungsElement[i]);
+    }
+    let tables = document.getElementsByTagName("table");
+    for (let i = 0; i < tables.length; i++) {
+        elementsText.push(tables[i]);
+    }
+    elementsText.push(document.getElementsByClassName("buchhaltung-name")[0]);
+    elementsWhite.forEach((e) => {
+        e.classList.toggle("lightModeWhite");
+    });
+    elementsGray.forEach((e) => {
+        e.classList.toggle("lightModeGray");
+    });
+    elementsText.forEach((e) => {
+        e.classList.toggle("lightModeText");
+    });
+}
+
+getAllParticipants();
+getAllProducts();
