@@ -2,31 +2,52 @@ let guthabenAlt = 0;
 let guthabenNeu = guthabenAlt;
 let sum = 0;
 let rowIdTeilnehmer = 0;
-let rowIdEinkauf = 0;
+let rowIdEinkauf = 1;
 let participants = [];
 let products = [];
 let currentId = 0;
 
+function handleErrors(response) {
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+    return response;
+}
+
+const appHeight = () => {
+    const doc = document.documentElement;
+    doc.style.setProperty("--app-height", `${window.innerHeight}px`);
+};
+window.addEventListener("resize", appHeight);
+appHeight();
+
 const getAllParticipants = async () => {
-    await fetch("http://localhost:8000/kiosk/getAllParticipants", {
+    await fetch("http://89.22.122.138:8000/kiosk/getAllParticipants", {
         method: "Get",
         headers: {
             "Content-Type": "application/json",
         },
-    }).then((response) => {
-        response.json().then((parsedJson) => {
-            if (parsedJson.status !== "success") {
-                errorElement(parsedJson.message);
-            } else {
-                participants = parsedJson.data.participants;
-                zeileEinfuegenTeilnehmer();
-            }
+    })
+        .then(handleErrors)
+        .then((response) => {
+            response.json().then((parsedJson) => {
+                if (parsedJson.status !== "success") {
+                    errorElement(parsedJson.message);
+                } else {
+                    participants = parsedJson.data.participants;
+                    zeileEinfuegenTeilnehmer();
+                }
+            });
+        })
+        .catch((error) => {
+            //Here is still promise
+            console.log(error);
+            errorElement(error);
         });
-    });
 };
 
 const speichern = async () => {
-    await fetch(`http://localhost:8000/kiosk/participants/${currentId}`, {
+    await fetch(`http://89.22.122.138:8000/kiosk/participants/${currentId}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -34,35 +55,49 @@ const speichern = async () => {
         body: JSON.stringify({
             guthaben: guthabenNeu,
         }),
-    }).then((response) => {
-        response.json().then((parsedJson) => {
-            if (parsedJson.status !== "success") {
-                errorElement(parsedJson.message);
-            } else {
-                clear();
-                getAllParticipants();
-            }
+    })
+        .then(handleErrors)
+        .then((response) => {
+            response.json().then((parsedJson) => {
+                if (parsedJson.status !== "success") {
+                    errorElement(parsedJson.message);
+                } else {
+                    clear();
+                    getAllParticipants();
+                }
+            });
+        })
+        .catch((error) => {
+            //Here is still promise
+            console.log(error);
+            errorElement(error);
         });
-    });
 };
 
 const getAllProducts = async () => {
-    await fetch("http://localhost:8000/kiosk/getAllProducts", {
+    await fetch("http://89.22.122.138:8000/kiosk/getAllProducts", {
         method: "Get",
         headers: {
             "Content-Type": "application/json",
         },
-    }).then((response) => {
-        response.json().then((parsedJson) => {
-            if (parsedJson.status !== "success") {
-                errorElement(parsedJson.message);
-            } else {
-                products = parsedJson.data.products;
-                createProducts();
-                toggleLightDark();
-            }
+    })
+        .then(handleErrors)
+        .then((response) => {
+            response.json().then((parsedJson) => {
+                if (parsedJson.status !== "success") {
+                    errorElement(parsedJson.message);
+                } else {
+                    products = parsedJson.data.products;
+                    createProducts();
+                    toggleLightDark();
+                }
+            });
+        })
+        .catch((error) => {
+            //Here is still promise
+            console.log(error);
+            errorElement(error);
         });
-    });
 };
 
 const createProducts = async () => {
@@ -75,7 +110,7 @@ const createProducts = async () => {
         button.addEventListener("click", function () {
             inDenEinkaufswagen(i, products[i].name, products[i].price);
         });
-        button.innerHTML = `${products[i].name} <br> ${products[i].price} €`;
+        button.innerHTML = `<b>${products[i].name}</b> <br> ${products[i].price} €`;
         suessigkeitenContainer.insertAdjacentElement("beforeend", button);
     }
 };
@@ -107,7 +142,7 @@ const zeileEinfuegenTeilnehmer = () => {
             );
 
             reihe.addEventListener("click", function () {
-                if (rowIdEinkauf > 0) {
+                if (rowIdEinkauf > 1) {
                     if (
                         confirm(
                             "Bist du dir sicher? Du hast noch nicht gespeichert!"
@@ -139,13 +174,13 @@ function zeileEinfuegenEinkauf(artikelId, artikelName, preis) {
     const tabelle = document.getElementById("tabelleEinkauf");
     // schreibe Tabellenzeile
     const reihe = tabelle.insertRow(-1);
-    let vorname = artikelName,
+    let artikel = artikelName,
         zelle1 = reihe.insertCell();
-    zelle1.innerHTML = vorname;
+    zelle1.innerHTML = artikel;
 
-    let nachname = preis,
+    let artikelPreis = `${preis} €`,
         zelle2 = reihe.insertCell();
-    zelle2.innerHTML = nachname;
+    zelle2.innerHTML = artikelPreis;
 
     reihe.setAttribute("rowId", rowIdEinkauf++);
     reihe.setAttribute("artikelId", artikelId);
@@ -153,7 +188,10 @@ function zeileEinfuegenEinkauf(artikelId, artikelName, preis) {
 
     reihe.addEventListener("click", function () {
         if (confirm("Artikel wirklich löschen?")) {
-            ausDemEinkaufswagen(parseFloat(this.getAttribute("preis")));
+            ausDemEinkaufswagen(
+                parseFloat(this.getAttribute("preis")),
+                parseInt(this.closest("tr").rowIndex)
+            );
         }
     });
 }
@@ -162,8 +200,12 @@ const auswahl = (personId, guthaben, name) => {
     guthabenAlt = guthaben;
     guthabenNeu = guthabenAlt;
     document.getElementById("participantName").innerHTML = name;
-    document.getElementById("guthabenAlt").innerHTML = `Alt: ${guthabenAlt} €`;
-    document.getElementById("guthabenNeu").innerHTML = `Neu: ${guthabenNeu} €`;
+    document.getElementById(
+        "guthabenAlt"
+    ).innerHTML = `Alt: <b>${guthabenAlt} € </b>`;
+    document.getElementById(
+        "guthabenNeu"
+    ).innerHTML = `Neu: <b>${guthabenNeu} € </b>`;
 };
 
 const checkGuthaben = (preis) => {
@@ -180,17 +222,21 @@ const clear = () => {
 };
 const clearEinkauf = () => {
     const tabelleEinkauf = document.getElementById("tabelleEinkauf");
-    for (let i = rowIdEinkauf; i > 0; i--) {
+    for (let i = rowIdEinkauf - 1; i > 0; i--) {
         tabelleEinkauf.deleteRow(i);
     }
     guthabenAlt = 0;
     guthabenNeu = 0;
     sum = 0;
-    rowIdEinkauf = 0;
+    rowIdEinkauf = 1;
     currentId = 0;
-    document.getElementById("guthabenAlt").innerHTML = `Alt: ${guthabenAlt} €`;
-    document.getElementById("guthabenNeu").innerHTML = `Neu: ${guthabenNeu} €`;
-    document.getElementById("sum").innerHTML = `Summe: ${sum} €`;
+    document.getElementById(
+        "guthabenAlt"
+    ).innerHTML = `Alt: <b>${guthabenAlt} €</b>`;
+    document.getElementById(
+        "guthabenNeu"
+    ).innerHTML = `Neu: <b>${guthabenNeu} €</b>`;
+    document.getElementById("sum").innerHTML = `Summe: <b>${sum} €</b>`;
 };
 const inDenEinkaufswagen = (artikelId, artikelName, preis) => {
     if (checkGuthaben(preis)) {
@@ -201,8 +247,8 @@ const inDenEinkaufswagen = (artikelId, artikelName, preis) => {
 
         document.getElementById(
             "guthabenNeu"
-        ).innerHTML = `Neu: ${guthabenNeu} €`;
-        document.getElementById("sum").innerHTML = `Sum: ${sum} €`;
+        ).innerHTML = `Neu: <b>${guthabenNeu} €</b>`;
+        document.getElementById("sum").innerHTML = `Summe: <b>${sum} € </b>`;
 
         zeileEinfuegenEinkauf(artikelId, artikelName, preis);
     } else {
@@ -210,17 +256,34 @@ const inDenEinkaufswagen = (artikelId, artikelName, preis) => {
     }
 };
 
-const ausDemEinkaufswagen = (preis) => {
+const ausDemEinkaufswagen = (preis, id) => {
+    console.log(id);
     const tabelle = document.getElementById("tabelleEinkauf");
-    tabelle.deleteRow(rowIdEinkauf);
+    tabelle.deleteRow(id);
     sum -= preis;
     sum = parseFloat(sum.toFixed(2));
     guthabenNeu += preis;
     guthabenNeu = parseFloat(guthabenNeu.toFixed(2));
     rowIdEinkauf--;
 
-    document.getElementById("guthabenNeu").innerHTML = `Neu: ${guthabenNeu} €`;
-    document.getElementById("sum").innerHTML = `Sum: ${sum} €`;
+    document.getElementById(
+        "guthabenNeu"
+    ).innerHTML = `Neu: <b>${guthabenNeu} € </b>`;
+    document.getElementById("sum").innerHTML = `Summe: <b>${sum} € </b>`;
+};
+
+const errorElement = (errorMessage) => {
+    const element = document.createElement("div");
+    element.setAttribute("class", "error");
+
+    const text = document.createElement("p");
+    text.setAttribute("class", "errorText");
+    text.innerHTML = errorMessage;
+
+    element.insertAdjacentElement("afterbegin", text);
+
+    const container = document.getElementsByClassName("container")[0];
+    container.insertAdjacentElement("afterbegin", element);
 };
 
 function toggleLightDark() {
