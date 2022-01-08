@@ -99,12 +99,12 @@
             setTimeout(function () {
                 let scrollpos = sessionStorage.getItem('scrollpos');
                 if (scrollpos) window.scrollTo(0, scrollpos);
-            }, 100);
+            }, 200);
         })
-        let modal = document.getElementById("myModal");
+        let myModal = document.getElementById("myModal");
     
         window.onbeforeunload = function (e) {
-            if (e.target !== modal) {
+            if (e.target !== myModal) {
                 sessionStorage.setItem("scrollpos", window.scrollY);  
             }
         };</script>
