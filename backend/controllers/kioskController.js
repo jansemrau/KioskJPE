@@ -162,3 +162,7 @@ exports.deleteGottesdienst = catchAsync(async (req, res, next) => {
         data: null,
     });
 });
+
+exports.login = catchAsync(async (req, res, next) => {
+    res.render("login");
+});

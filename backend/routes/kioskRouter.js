@@ -1,17 +1,17 @@
 const express = require("express");
 const multer = require("multer");
 const uuid = require("uuid").v4;
-const gottesdienstController = require("../controllers/kioskController");
+const kioskController = require("../controllers/kioskController");
 
 const router = express.Router();
 
-router.get("/getAllParticipants", gottesdienstController.getAllParticipants);
-router.post("/newParticipant", gottesdienstController.newParticipant);
-router.delete("/participants/:id", gottesdienstController.deleteParticipant);
+router.get("/getAllParticipants", kioskController.getAllParticipants);
+router.post("/newParticipant", kioskController.newParticipant);
+router.delete("/participants/:id", kioskController.deleteParticipant);
 
-router.get("/getAllProducts", gottesdienstController.getAllProducts);
-router.post("/newProduct", gottesdienstController.newProduct);
-router.delete("/products/:id", gottesdienstController.deleteProduct);
-router.route("/participants/:id").patch(gottesdienstController.updateGuthaben);
+router.get("/getAllProducts", kioskController.getAllProducts);
+router.post("/newProduct", kioskController.newProduct);
+router.delete("/products/:id", kioskController.deleteProduct);
+router.route("/participants/:id").patch(kioskController.updateGuthaben);
 
 module.exports = router;

@@ -7,6 +7,23 @@ let participants = [];
 let products = [];
 let currentId = 0;
 
+const validateUser = async () => {
+    await fetch("http://localhost:8000/auth/welcome", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("authToken"),
+        },
+        body: JSON.stringify({}),
+    }).then((response) => {
+        console.log(response);
+        if (response.status === 401 || response.status === 403) {
+            console.log("not authenticated");
+            window.location.href = "authentication.html";
+        }
+    });
+};
+
 const getAllParticipants = async () => {
     await fetch("http://localhost:8000/kiosk/getAllParticipants", {
         method: "Get",
@@ -271,3 +288,5 @@ function toggleLightDark() {
 
 getAllParticipants();
 getAllProducts();
+
+validateUser();

@@ -8,6 +8,23 @@ let rowIdEinkauf = 0;
 let participants = [];
 let products = [];
 
+const validateUser = async () => {
+    await fetch("http://localhost:8000/auth/welcome", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("authToken"),
+        },
+        body: JSON.stringify({}),
+    }).then((response) => {
+        console.log(response);
+        if (response.status === 401 || response.status === 403) {
+            console.log("not authenticated");
+            window.location.href = "authentication.html";
+        }
+    });
+};
+
 const newParticipant = async () => {
     const firstname = document.getElementById("firstname").value;
     const lastname = document.getElementById("lastname").value;
@@ -301,8 +318,15 @@ const deleteProduct = async (id) => {
     });
 };
 
+const signOut = () => {
+    window.localStorage.removeItem("authToken");
+    window.location.reload();
+};
+
 getAllParticipants();
 getAllProductsTable();
+
+validateUser();
 
 //Signature
 const signature = (currentId) => {

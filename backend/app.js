@@ -11,6 +11,8 @@ const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 const kioskRouter = require("./routes/kioskRouter");
 
+const authRouter = require("./authentication/authRouter");
+
 const app = express();
 
 // 1) GLOBAL MIDDLEWARES
@@ -38,7 +40,7 @@ app.use(function (req, res, next) {
     );
     res.header(
         "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+        "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token"
     );
     next();
 });
@@ -80,6 +82,7 @@ app.use((req, res, next) => {
 
 // 3) ROUTES
 app.use("/kiosk", kioskRouter);
+app.use("/auth", authRouter);
 
 app.all("*", (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
