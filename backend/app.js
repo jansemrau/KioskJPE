@@ -10,7 +10,6 @@ const bodyParser = require("body-parser");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 const kioskRouter = require("./routes/kioskRouter");
-
 const authRouter = require("./authentication/authRouter");
 
 const app = express();

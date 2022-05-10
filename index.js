@@ -7,8 +7,10 @@ let participants = [];
 let products = [];
 let currentId = 0;
 
+let path = "http://89.22.122.138";
+
 const validateUser = async () => {
-    await fetch("http://localhost:8000/auth/welcome", {
+    await fetch(`${path}/auth/welcome`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -19,13 +21,13 @@ const validateUser = async () => {
         console.log(response);
         if (response.status === 401 || response.status === 403) {
             console.log("not authenticated");
-            window.location.href = "authentication.html";
+            window.location.href = `${path}/authentication`;
         }
     });
 };
 
 const getAllParticipants = async () => {
-    await fetch("http://localhost:8000/kiosk/getAllParticipants", {
+    await fetch(`${path}/kiosk/getAllParticipants`, {
         method: "Get",
         headers: {
             "Content-Type": "application/json",
@@ -43,7 +45,7 @@ const getAllParticipants = async () => {
 };
 
 const speichern = async () => {
-    await fetch(`http://localhost:8000/kiosk/participants/${currentId}`, {
+    await fetch(`${path}/kiosk/participants/${currentId}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -64,7 +66,7 @@ const speichern = async () => {
 };
 
 const getAllProducts = async () => {
-    await fetch("http://localhost:8000/kiosk/getAllProducts", {
+    await fetch(`${path}/kiosk/getAllProducts`, {
         method: "Get",
         headers: {
             "Content-Type": "application/json",

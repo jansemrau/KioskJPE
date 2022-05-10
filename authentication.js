@@ -1,8 +1,9 @@
+let path = "http://89.22.122.138";
+
 const login = async () => {
     let email = document.getElementById("inputEmail").value;
     let password = document.getElementById("inputPassword").value;
-    console.log(email);
-    await fetch("http://localhost:8000/auth/login", {
+    await fetch(`${path}/auth/login`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -11,33 +12,22 @@ const login = async () => {
             email: email,
             password: password,
         }),
-    })
-        .then((response) => {
-            if (response.status === 400) {
-                document.getElementById("errorContainer").style.display =
-                    "inherit";
-                document.getElementById("errorField").innerHTML = e.value;
-            } else if (response.status === 200) {
-                response.json().then((parsedJson) => {
-                    try {
-                        console.log(parsedJson);
-                        localStorage.setItem(
-                            "authToken",
-                            parsedJson.data.user.token
-                        );
-                        window.location.href = "index.html";
-                    } catch (e) {
-                        window.location.reload();
-                    }
-                });
-            } else {
-                document.getElementById("errorContainer").style.display =
-                    "inherit";
-                document.getElementById("errorField").innerHTML = e.value;
-            }
-        })
-        .catch((e) => {
+    }).then((response) => {
+        if (response.status === 400) {
             document.getElementById("errorContainer").style.display = "inherit";
-            document.getElementById("errorField").innerHTML = "Fehler";
-        });
+            document.getElementById("errorField").innerHTML = e.value;
+        } else if (response.status === 200) {
+            response.json().then((parsedJson) => {
+                if (parsedJson.status !== "success") {
+                    errorElement(parsedJson.message);
+                } else {
+                    localStorage.setItem(
+                        "authToken",
+                        parsedJson.data.user.token
+                    );
+                    location.href = `${path}/verkauf`;
+                }
+            });
+        }
+    });
 };

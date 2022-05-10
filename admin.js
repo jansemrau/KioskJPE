@@ -8,8 +8,10 @@ let rowIdEinkauf = 0;
 let participants = [];
 let products = [];
 
+let path = "http://89.22.122.138";
+
 const validateUser = async () => {
-    await fetch("http://localhost:8000/auth/welcome", {
+    await fetch(`${path}/auth/welcome`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -20,7 +22,7 @@ const validateUser = async () => {
         console.log(response);
         if (response.status === 401 || response.status === 403) {
             console.log("not authenticated");
-            window.location.href = "authentication.html";
+            window.location.href = `${path}/authentication`;
         }
     });
 };
@@ -35,7 +37,7 @@ const newParticipant = async () => {
     } else {
         parseFloat(guthaben);
     }
-    await fetch("http://localhost:8000/kiosk/newParticipant", {
+    await fetch(`${path}/kiosk/newParticipant`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -57,7 +59,7 @@ const newParticipant = async () => {
 };
 
 const deleteParticipant = async (id) => {
-    await fetch(`http://localhost:8000/kiosk/participants/${id}`, {
+    await fetch(`${path}/kiosk/participants/${id}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -69,7 +71,7 @@ const deleteParticipant = async (id) => {
 
 const auszahlen = async (currentId, dataUrl) => {
     let datum = Date.now();
-    await fetch(`http://localhost:8000/kiosk/participants/${currentId}`, {
+    await fetch(`${path}/kiosk/participants/${currentId}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -90,7 +92,7 @@ const auszahlen = async (currentId, dataUrl) => {
 };
 
 const getAllParticipants = async () => {
-    await fetch("http://localhost:8000/kiosk/getAllParticipants", {
+    await fetch(`${path}/kiosk/getAllParticipants`, {
         method: "Get",
         headers: {
             "Content-Type": "application/json",
@@ -227,7 +229,7 @@ const zeileEinfuegenTeilnehmer = () => {
 };
 
 const getAllProductsTable = async () => {
-    await fetch("http://localhost:8000/kiosk/getAllProducts", {
+    await fetch(`${path}/kiosk/getAllProducts`, {
         method: "Get",
         headers: {
             "Content-Type": "application/json",
@@ -287,7 +289,7 @@ const newProduct = async () => {
     } else {
         parseFloat(price);
     }
-    await fetch("http://localhost:8000/kiosk/newProduct", {
+    await fetch(`${path}/kiosk/newProduct`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -308,7 +310,7 @@ const newProduct = async () => {
 };
 
 const deleteProduct = async (id) => {
-    await fetch(`http://localhost:8000/kiosk/products/${id}`, {
+    await fetch(`${path}/kiosk/products/${id}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
