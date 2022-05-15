@@ -26,6 +26,13 @@ const validateUser = async () => {
     });
 };
 
+function handleErrors(response) {
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+    return response;
+}
+
 const getAllParticipants = async () => {
     await fetch(`${path}/kiosk/getAllParticipants`, {
         method: "Get",

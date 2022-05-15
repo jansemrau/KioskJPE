@@ -39,7 +39,7 @@ const newParticipant = async () => {
         } else {
             guthaben = parseFloat(guthaben);
         }
-        await fetch("http://89.22.122.138:8000/kiosk/newParticipant", {
+        await fetch(`${path}/kiosk/newParticipant`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -314,7 +314,7 @@ const newProduct = async (event) => {
         } else {
             price = parseFloat(price);
         }
-        await fetch("http://89.22.122.138:8000/kiosk/newProduct", {
+        await fetch(`${path}/kiosk/newProduct`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
