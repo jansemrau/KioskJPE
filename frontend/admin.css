@@ -2,6 +2,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    font-size: 1.15rem;
 }
 
 /** Breakpoint: 576px+ */
@@ -56,19 +57,17 @@
     }
 }
 .headline--small {
-    font-size: 1.5rem;
+    font-size: 2rem;
     padding: 0.5rem 0;
 }
 
 .text {
     color: #ed6a4e;
-    font-size: 1.5rem;
     font-family: Arial, Helvetica, sans-serif;
 }
 .label {
     display: block;
     color: #ed6a4e;
-    font-size: 1rem;
     font-family: Arial, Helvetica, sans-serif;
     padding-top: 0.5rem;
 }
@@ -77,6 +76,7 @@
     -webkit-appearance: none;
     appearance: none;
     font-family: Arial, Helvetica, sans-serif;
+    color: #014153;
     border: 0.125rem solid #014153;
     border-radius: 0.25rem;
 }
@@ -94,11 +94,14 @@
     display: block;
     background-color: #014153;
     border: 0.125rem solid #ed6a4e;
+    border-radius: 0.25rem;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 1rem;
     color: white;
     text-decoration: none;
     cursor: pointer;
+}
+.button--fullwidth {
+    width: 100%;
 }
 .button:hover {
     border: 0.125rem solid white;
@@ -109,17 +112,15 @@
 .button--ausgezahlt {
     background-color: #666;
     border: none;
-    cursor: initial;
+    cursor: context-menu;
 }
 .button--ausgezahlt:hover {
     border: none;
-    cursor: initial;
 }
 
 .datum {
     background-color: #014153;
     color: #ed6a4e;
-    font-size: 1.5rem;
     font-family: Arial, Helvetica, sans-serif;
     padding-left: 1rem;
 }
@@ -206,7 +207,6 @@
     background-color: #014153;
     border: 0.25rem solid #ed6a4e;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 1rem;
     padding: 0.25rem;
     color: #ed6a4e;
     text-decoration: none;
@@ -241,7 +241,6 @@
 }
 .errorText {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 1.5rem;
     color: #014153;
 }
 
@@ -249,7 +248,6 @@ table {
     width: 100%;
     font-family: Arial, Helvetica, sans-serif;
     color: #014153;
-    font-size: 1rem;
 }
 table,
 td,
@@ -303,10 +301,10 @@ caption {
     background-color: #fefefe;
     margin: auto;
     padding: 1rem;
-    border-radius: 0.25;
+    border-radius: 0.25rem;
     max-width: 90vw;
     height: auto;
-    max-height: 90vh;
+    max-height: 80vw;
 }
 
 .ModalOpen {
@@ -332,4 +330,8 @@ caption {
 .modal-image {
     width: 100%;
     height: 100%;
+}
+
+.printTable {
+    display: none;
 }

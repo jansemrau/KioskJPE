@@ -9,6 +9,8 @@
 </head>
 <body>
     <div class="container" id="container">
+    <a href="index.html" class="button" style="width: fit-content">Kiosk</a>
+        <button class="button" style="width: fit-content" onclick="druckeTeilnehmer()">drucken</button>
         <div id="form-container" class="form-container">
             <form id="participantForm" class="form" action="" method="post" onsubmit="onsubmit=newParticipant();return false;">
                 <button class="button button--inline" id="sig-cancellationBtnImage" onclick="signOut()">Abmelden</button>
@@ -17,29 +19,29 @@
                 <input class="input" type="text" id="firstname" name="firstname">
                 <label class="label" for="lastname">Nachname</label>
                 <input class="input" type="text" id="lastname" name="lastname">
-                <label class="label" for="guthaben">Guthaben in €</label>
+                <label class="label" for="guthaben">Guthaben (€)</label>
                 <input class="input" type="text" id="guthaben" name="guthaben">
-                <input class="button" type="submit" value="Registrieren">
-            </form>
+                <input class="button" type="button" onclick=" newParticipant(event)" value="Registrieren">
+            </div>
                     <table id="tabelleTeilnehmer">
                         <thead>
                             <tr>
                                 <th>Vorname</th>
                                 <th>Nachname</th>
-                                <th>Guthaben</th>
+                                <th>Guthaben (€)</th>
                                 <th>Aktion</th>
                             </tr>
                         </thead>
                     </table>
                             <hr class="hr">
-            <form id="productForm" class="form" action="" method="post" onsubmit="onsubmit=newProduct();return false;">
+            <div id="productForm" class="form">
                 <h2 class="headline headline--small">Neues Produkt</h2>
                 <label class="label" for="name">Name</label>
                 <input class="input" type="text" id="name" name="name">
-                <label class="label" for="price">Preis in €</label>
+                <label class="label" for="price">Preis (€)</label>
                 <input class="input" type="text" id="price" name="price">
-                <input class="button" type="submit" value="Einfügen">
-            </form>
+                <input class="button" type="button" onclick="newProduct(event)" value="Einfügen">
+            </div>
                     <table id="tabelleProdukte">
                         <thead>
                             <tr>
@@ -77,6 +79,35 @@
             <button class="button button--inline" id="sig-cancellationBtnImage">Zurück</button>
         </div>  
     </div>
+    <table style="border: 1px solid black; font-family: Arial, Helvetica, sans-serif; font-size: 1rem; border-collapse:collapse;" id="printTable" class="printTable">
+        <thead>
+            <tr>
+                <th>Vorname</th>
+                <th>Nachname</th>
+                <th>Guthaben</th>
+                <th>Unterschrift</th>
+            </tr>
+        </thead>
+        <tbody id="printTableBody">
+        </tbody>
+    </table>
     <script src="admin.js"></script>
+    <script src="utils/Canvas.js"></script>
+    <script src="utils/Modal.js"></script>
+    <script src="utils/Print.js"></script>
+    <script>
+        window.addEventListener('load', function () {
+            setTimeout(function () {
+                let scrollpos = sessionStorage.getItem('scrollpos');
+                if (scrollpos) window.scrollTo(0, scrollpos);
+            }, 200);
+        })
+        let myModal = document.getElementById("myModal");
+    
+        window.onbeforeunload = function (e) {
+            if (e.target !== myModal) {
+                sessionStorage.setItem("scrollpos", window.scrollY);  
+            }
+        };</script>
 </body>
 </html>

@@ -31,12 +31,38 @@ const newParticipant = async () => {
     const firstname = document.getElementById("firstname").value;
     const lastname = document.getElementById("lastname").value;
     let guthaben = document.getElementById("guthaben").value;
-    if (guthaben.indexOf(",") > -1) {
-        guthaben = guthaben.replace(",", ".");
-        parseFloat(guthaben);
+    let isValid = /^[0-9,.]*$/.test(guthaben);
+    if (!isNaN(isValid)) {
+        if (guthaben.indexOf(",") > -1) {
+            guthaben = guthaben.replace(",", ".");
+            guthaben = parseFloat(guthaben);
+        } else {
+            guthaben = parseFloat(guthaben);
+        }
+        await fetch("http://89.22.122.138:8000/kiosk/newParticipant", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                firstname: firstname,
+                lastname: lastname,
+                guthaben: guthaben,
+            }),
+        }).then((response) => {
+            response.json().then((parsedJson) => {
+                if (parsedJson.status !== "success") {
+                    errorElement(parsedJson.message);
+                } else {
+                    location.reload();
+                }
+            });
+        });
     } else {
-        parseFloat(guthaben);
+        alert("Kein gültiges Guthaben eingegeben, bitte neu eingeben");
+        location.reload();
     }
+<<<<<<< HEAD:admin.js
     await fetch(`${path}/kiosk/newParticipant`, {
         method: "POST",
         headers: {
@@ -60,6 +86,12 @@ const newParticipant = async () => {
 
 const deleteParticipant = async (id) => {
     await fetch(`${path}/kiosk/participants/${id}`, {
+=======
+};
+
+const deleteParticipant = async (id) => {
+    await fetch(`http://89.22.122.138:8000/kiosk/participants/${id}`, {
+>>>>>>> 509407c58371f565f7d8730a1c8b96bf17adf883:frontend/admin.js
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -69,6 +101,7 @@ const deleteParticipant = async (id) => {
     });
 };
 
+<<<<<<< HEAD:admin.js
 const auszahlen = async (currentId, dataUrl) => {
     let datum = Date.now();
     await fetch(`${path}/kiosk/participants/${currentId}`, {
@@ -93,6 +126,10 @@ const auszahlen = async (currentId, dataUrl) => {
 
 const getAllParticipants = async () => {
     await fetch(`${path}/kiosk/getAllParticipants`, {
+=======
+const getAllParticipants = async () => {
+    await fetch("http://89.22.122.138:8000/kiosk/getAllParticipants", {
+>>>>>>> 509407c58371f565f7d8730a1c8b96bf17adf883:frontend/admin.js
         method: "Get",
         headers: {
             "Content-Type": "application/json",
@@ -146,22 +183,19 @@ const zeileEinfuegenTeilnehmer = () => {
         reihe.setAttribute("personId", el._id);
         //Aktion
         let deleteButton = document.createElement("button");
-        deleteButton.setAttribute("class", "button");
+        deleteButton.setAttribute("class", "button button--fullwidth");
         deleteButton.innerHTML = "Löschen";
         deleteButton.addEventListener("click", function () {
-            if (
-                confirm(
-                    "Bist du dir sicher, dass du diesen Teilnehmer löschen möchtest?"
-                )
-            ) {
-                deleteParticipant(el._id);
-            }
+            deleteParticipant(el._id);
         });
 
         let auszahlenButton = document.createElement("button");
         if (el.signature) {
-            auszahlenButton.setAttribute("class", "button button--ausgezahlt");
-            auszahlenButton.innerHTML = "ausgezahlt";
+            auszahlenButton.setAttribute(
+                "class",
+                "button button--ausgezahlt button--fullwidth"
+            );
+            auszahlenButton.innerHTML = "Ausgezahlt";
             auszahlenButton.addEventListener("click", function () {
                 modal.className = "Modal is-visuallyHidden";
                 setTimeout(function () {
@@ -198,8 +232,8 @@ const zeileEinfuegenTeilnehmer = () => {
                 };
             });
         } else {
-            auszahlenButton.setAttribute("class", "button");
-            auszahlenButton.innerHTML = "auszahlen";
+            auszahlenButton.setAttribute("class", "button button--fullwidth");
+            auszahlenButton.innerHTML = "Auszahlen";
             auszahlenButton.addEventListener("click", function () {
                 if (
                     confirm(
@@ -229,7 +263,11 @@ const zeileEinfuegenTeilnehmer = () => {
 };
 
 const getAllProductsTable = async () => {
+<<<<<<< HEAD:admin.js
     await fetch(`${path}/kiosk/getAllProducts`, {
+=======
+    await fetch("http://89.22.122.138:8000/kiosk/getAllProducts", {
+>>>>>>> 509407c58371f565f7d8730a1c8b96bf17adf883:frontend/admin.js
         method: "Get",
         headers: {
             "Content-Type": "application/json",
@@ -257,10 +295,10 @@ function createProductsTable() {
 
         let price = el.price,
             zelle2 = reihe.insertCell();
-        zelle2.innerHTML = price;
+        zelle2.innerHTML = `${price} €`;
 
         let deleteButton = document.createElement("button");
-        deleteButton.setAttribute("class", "button");
+        deleteButton.setAttribute("class", "button button--fullwidth");
         deleteButton.innerHTML = "Löschen";
         deleteButton.addEventListener("click", function () {
             if (
@@ -280,23 +318,68 @@ function createProductsTable() {
     });
 }
 
-const newProduct = async () => {
+const newProduct = async (event) => {
+    event.preventDefault();
     const name = document.getElementById("name").value;
     let price = document.getElementById("price").value;
-    if (price.indexOf(",") > -1) {
-        price = price.replace(",", ".");
-        parseFloat(price);
+    let isValid = /^[0-9,.]*$/.test(price);
+    if (!isNaN(isValid)) {
+        if (price.indexOf(",") > -1) {
+            price = price.replace(",", ".");
+            price = parseFloat(price);
+        } else {
+            price = parseFloat(price);
+        }
+        await fetch("http://89.22.122.138:8000/kiosk/newProduct", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name: name,
+                price: price,
+            }),
+        }).then((response) => {
+            response.json().then((parsedJson) => {
+                if (parsedJson.status !== "success") {
+                    errorElement(parsedJson.message);
+                } else {
+                    location.reload();
+                }
+            });
+        });
     } else {
-        parseFloat(price);
+        alert("Keinen gültigen Preis eingegeben, bitte neu eingeben");
+        location.reload();
     }
+<<<<<<< HEAD:admin.js
     await fetch(`${path}/kiosk/newProduct`, {
         method: "POST",
+=======
+};
+
+const deleteProduct = async (id) => {
+    await fetch(`http://89.22.122.138:8000/kiosk/products/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    }).then((response) => {
+        location.reload();
+    });
+};
+
+const auszahlen = async (currentId, dataUrl) => {
+    let datum = Date.now();
+    await fetch(`http://89.22.122.138:8000/kiosk/participants/${currentId}`, {
+        method: "PATCH",
+>>>>>>> 509407c58371f565f7d8730a1c8b96bf17adf883:frontend/admin.js
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            name: name,
-            price: price,
+            signature: dataUrl,
+            datumAuszahlung: datum,
         }),
     }).then((response) => {
         response.json().then((parsedJson) => {
@@ -309,6 +392,7 @@ const newProduct = async () => {
     });
 };
 
+<<<<<<< HEAD:admin.js
 const deleteProduct = async (id) => {
     await fetch(`${path}/kiosk/products/${id}`, {
         method: "DELETE",
@@ -536,3 +620,7 @@ window.onclick = function (event) {
         container.parentElement.className = "";
     }
 };
+=======
+getAllParticipants();
+getAllProductsTable();
+>>>>>>> 509407c58371f565f7d8730a1c8b96bf17adf883:frontend/admin.js
