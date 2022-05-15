@@ -62,7 +62,6 @@ const newParticipant = async () => {
         alert("Kein gültiges Guthaben eingegeben, bitte neu eingeben");
         location.reload();
     }
-<<<<<<< HEAD:admin.js
     await fetch(`${path}/kiosk/newParticipant`, {
         method: "POST",
         headers: {
@@ -86,12 +85,6 @@ const newParticipant = async () => {
 
 const deleteParticipant = async (id) => {
     await fetch(`${path}/kiosk/participants/${id}`, {
-=======
-};
-
-const deleteParticipant = async (id) => {
-    await fetch(`http://89.22.122.138:8000/kiosk/participants/${id}`, {
->>>>>>> 509407c58371f565f7d8730a1c8b96bf17adf883:frontend/admin.js
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -101,7 +94,6 @@ const deleteParticipant = async (id) => {
     });
 };
 
-<<<<<<< HEAD:admin.js
 const auszahlen = async (currentId, dataUrl) => {
     let datum = Date.now();
     await fetch(`${path}/kiosk/participants/${currentId}`, {
@@ -126,10 +118,6 @@ const auszahlen = async (currentId, dataUrl) => {
 
 const getAllParticipants = async () => {
     await fetch(`${path}/kiosk/getAllParticipants`, {
-=======
-const getAllParticipants = async () => {
-    await fetch("http://89.22.122.138:8000/kiosk/getAllParticipants", {
->>>>>>> 509407c58371f565f7d8730a1c8b96bf17adf883:frontend/admin.js
         method: "Get",
         headers: {
             "Content-Type": "application/json",
@@ -263,11 +251,7 @@ const zeileEinfuegenTeilnehmer = () => {
 };
 
 const getAllProductsTable = async () => {
-<<<<<<< HEAD:admin.js
     await fetch(`${path}/kiosk/getAllProducts`, {
-=======
-    await fetch("http://89.22.122.138:8000/kiosk/getAllProducts", {
->>>>>>> 509407c58371f565f7d8730a1c8b96bf17adf883:frontend/admin.js
         method: "Get",
         headers: {
             "Content-Type": "application/json",
@@ -352,28 +336,8 @@ const newProduct = async (event) => {
         alert("Keinen gültigen Preis eingegeben, bitte neu eingeben");
         location.reload();
     }
-<<<<<<< HEAD:admin.js
     await fetch(`${path}/kiosk/newProduct`, {
         method: "POST",
-=======
-};
-
-const deleteProduct = async (id) => {
-    await fetch(`http://89.22.122.138:8000/kiosk/products/${id}`, {
-        method: "DELETE",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    }).then((response) => {
-        location.reload();
-    });
-};
-
-const auszahlen = async (currentId, dataUrl) => {
-    let datum = Date.now();
-    await fetch(`http://89.22.122.138:8000/kiosk/participants/${currentId}`, {
-        method: "PATCH",
->>>>>>> 509407c58371f565f7d8730a1c8b96bf17adf883:frontend/admin.js
         headers: {
             "Content-Type": "application/json",
         },
@@ -392,7 +356,6 @@ const auszahlen = async (currentId, dataUrl) => {
     });
 };
 
-<<<<<<< HEAD:admin.js
 const deleteProduct = async (id) => {
     await fetch(`${path}/kiosk/products/${id}`, {
         method: "DELETE",
@@ -620,7 +583,3 @@ window.onclick = function (event) {
         container.parentElement.className = "";
     }
 };
-=======
-getAllParticipants();
-getAllProductsTable();
->>>>>>> 509407c58371f565f7d8730a1c8b96bf17adf883:frontend/admin.js
