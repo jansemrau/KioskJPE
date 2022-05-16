@@ -2,7 +2,7 @@ let teilnehmer = [];
 
 function printData() {
     var divToPrint = document.getElementById("printTable");
-    newWin = window.open("");
+    let newWin = window.open("");
     newWin.document.write("<html><body><div id='table'></div></body></html>");
     const table = newWin.document.getElementById("table");
     table.appendChild(divToPrint);
@@ -68,7 +68,8 @@ const createPrintableTable = () => {
 };
 
 const druckeTeilnehmer = async () => {
-    await fetch("http://89.22.122.138:8000/kiosk/getAllParticipants", {
+    console.log("Ja");
+    await fetch("http://89.22.122.138/kiosk/getAllParticipants", {
         method: "Get",
         headers: {
             "Content-Type": "application/json",

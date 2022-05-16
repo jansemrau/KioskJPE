@@ -12,7 +12,7 @@
     <a href="index.html" class="button" style="width: fit-content">Kiosk</a>
         <button class="button" style="width: fit-content" onclick="druckeTeilnehmer()">drucken</button>
         <div id="form-container" class="form-container">
-            <form id="participantForm" class="form" action="" method="post" onsubmit="onsubmit=newParticipant();return false;">
+            <div id="participantForm" class="form">
                 <button class="button button--inline" id="sig-cancellationBtnSignOut" onclick="signOut()">Abmelden</button>
                 <h2 class="headline headline--small">Neuer Teilnehmer</h2>
                 <label class="label" for="firstname">Vorname</label>
@@ -21,7 +21,7 @@
                 <input class="input" type="text" id="lastname" name="lastname">
                 <label class="label" for="guthaben">Guthaben (€)</label>
                 <input class="input" type="text" id="guthaben" name="guthaben">
-                <input class="button" type="button" onclick=" newParticipant(event)" value="Registrieren">
+                <input class="button" type="button" onclick="newParticipant(event)" value="Registrieren">
             </div>
                     <table id="tabelleTeilnehmer">
                         <thead>
