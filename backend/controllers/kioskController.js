@@ -4,20 +4,10 @@ const Participants = require("../models/participantsModel");
 const Products = require("../models/productsModel");
 const APIFeatures = require("../utils/apiFeatures");
 const catchAsync = require("../utils/catchAsync");
+const graphqlResolver = require("../graphql/resolvers/index");
 
 exports.getAllParticipants = catchAsync(async (req, res, next) => {
-    // EXECUTE QUERY
-    const features = new APIFeatures(
-        Participants.find().sort({ firstname: "asc" }),
-        req.query
-    )
-        .filter()
-        .sort()
-        .limitFields()
-        .paginate();
-    const result = await features.query;
-
-    // SEND RESPONSE
+    const result = graphqlResolver.getAllParticipants(req.query);
     res.status(200).json({
         status: "success",
         results: result.length,
@@ -28,18 +18,7 @@ exports.getAllParticipants = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllProducts = catchAsync(async (req, res, next) => {
-    // EXECUTE QUERY
-    const features = new APIFeatures(
-        Products.find().sort({ name: "asc" }),
-        req.query
-    )
-        .filter()
-        .sort()
-        .limitFields()
-        .paginate();
-    const result = await features.query;
-
-    // SEND RESPONSE
+    const result = graphqlResolver.getAllProducts(req.query);
     res.status(200).json({
         status: "success",
         results: result.length,
@@ -50,7 +29,7 @@ exports.getAllProducts = catchAsync(async (req, res, next) => {
 });
 
 exports.newParticipant = catchAsync(async (req, res, next) => {
-    const newParticipant = await Participants.create(req.body);
+    const newParticipant = graphqlResolver.createParticipant(req.query);
 
     res.status(201).json({
         status: "success",
@@ -60,23 +39,8 @@ exports.newParticipant = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.deleteParticipant = catchAsync(async (req, res, next) => {
-    const deleteParticipant = await Participants.findByIdAndDelete(
-        req.params.id
-    );
-
-    if (!deleteParticipant) {
-        return next(new AppError("No Participant found with that Id", 404));
-    }
-
-    res.status(204).json({
-        status: "success",
-        data: null,
-    });
-});
-
 exports.newProduct = catchAsync(async (req, res, next) => {
-    const newProduct = await Products.create(req.body);
+    const newProduct = graphqlResolver.createProduct(req.query);
 
     res.status(201).json({
         status: "success",
@@ -86,10 +50,23 @@ exports.newProduct = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.deleteProduct = catchAsync(async (req, res, next) => {
-    const deleteProduct = await Products.findByIdAndDelete(req.params.id);
+exports.deleteParticipant = catchAsync(async (req, res, next) => {
+    const deletedParticipant = graphqlResolver.deleteParticipant(req.params);
 
-    if (!deleteProduct) {
+    if (!deletedParticipant) {
+        return next(new AppError("No Participant found with that Id", 404));
+    }
+
+    res.status(204).json({
+        status: "success",
+        data: null,
+    });
+});
+
+exports.deleteProduct = catchAsync(async (req, res, next) => {
+    const deletedProduct = graphqlResolver.deleteProduct(req.params);
+
+    if (!deletedProduct) {
         return next(new AppError("No Product found with that Id", 404));
     }
 
@@ -99,42 +76,10 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.getGottesdienst = catchAsync(async (req, res, next) => {
-    const Gottesdienst = await Gottesdienst.findById(req.params.id);
-    // Gottesdienst.findOne({ _id: req.params.id })
-
-    if (!Gottesdienst) {
-        return next(new AppError("No Gottesdienst found with that Id", 404));
-    }
-
-    res.status(200).json({
-        status: "success",
-        data: {
-            Gottesdienst,
-        },
-    });
-});
-
-exports.createGottesdienst = catchAsync(async (req, res, next) => {
-    const newGottesdienst = await Gottesdienst.create(req.body);
-
-    res.status(201).json({
-        status: "success",
-        data: {
-            Gottesdienst: newGottesdienst,
-        },
-    });
-});
-
 exports.updateGuthaben = catchAsync(async (req, res, next) => {
-    const result = await Participants.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        {
-            new: true,
-            runValidators: true,
-        }
-    );
+    const args = { id: req.params.id, guthabenNeu: req.body.guthaben };
+    const updatedParticipant = graphqlResolver.updateGuthaben(args);
+
     if (!result) {
         return next(new AppError("No Participant found with that Id", 404));
     }
@@ -142,26 +87,7 @@ exports.updateGuthaben = catchAsync(async (req, res, next) => {
     res.status(200).json({
         status: "success",
         data: {
-            result,
+            updatedParticipant,
         },
     });
-});
-
-exports.deleteGottesdienst = catchAsync(async (req, res, next) => {
-    const deleteGottesdienst = await Gottesdienst.findByIdAndDelete(
-        req.params.id
-    );
-
-    if (!deleteGottesdienst) {
-        return next(new AppError("No Gottesdienst found with that Id", 404));
-    }
-
-    res.status(204).json({
-        status: "success",
-        data: null,
-    });
-});
-
-exports.login = catchAsync(async (req, res, next) => {
-    res.render("login");
 });

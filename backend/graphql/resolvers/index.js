@@ -1,7 +1,7 @@
-const loadDB = require("../mongodb");
+const loadDB = require("../../mongodb");
 
 module.exports = {
-    products: async () => {
+    getAllProducts: async () => {
         try {
             const db = await loadDB();
             let productsFetches = await db.collection("Products").find({});
@@ -16,7 +16,7 @@ module.exports = {
             throw error;
         }
     },
-    participants: async () => {
+    getAllParticipants: async () => {
         try {
             const db = await loadDB();
             const participantsFetches = await db
@@ -57,6 +57,38 @@ module.exports = {
                 guthaben: guthaben,
             });
             return { ...newParticipant._doc, _id: newParticipant.id };
+        } catch (error) {
+            throw error;
+        }
+    },
+    deleteParticipant: async (args) => {
+        try {
+            const id = args.id;
+            const db = await loadDB();
+            return db
+                .collection("Participants")
+                .deleteOne({ _id: ObjectId(id) });
+        } catch (error) {
+            throw error;
+        }
+    },
+    deleteProduct: async (args) => {
+        try {
+            const id = args.id;
+            const db = await loadDB();
+            return db.collection("Products").deleteOne({ _id: ObjectId(id) });
+        } catch (error) {
+            throw error;
+        }
+    },
+    updateGuthaben: async (args) => {
+        try {
+            const id = args.id;
+            const guthabenNeu = args.guthaben;
+            const db = await loadDB();
+            return db
+                .collection("Products")
+                .update({ _id: ObjectId(id), guthaben: guthabenNeu });
         } catch (error) {
             throw error;
         }

@@ -6,8 +6,8 @@ const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
 const bodyParser = require("body-parser");
-const graphqlHTTP = require("express-graphql");
-const graphqlSchema = require("./graphql/schema");
+const { graphqlHTTP } = require("express-graphql");
+const graphqlSchema = require("./graphql/schema/schema");
 const graphqlResolvers = require("./graphql/resolvers");
 
 const AppError = require("./utils/appError");
