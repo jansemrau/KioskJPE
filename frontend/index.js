@@ -346,5 +346,3 @@ function toggleLightDark() {
 
 getAllParticipants();
 getAllProducts();
-
-validateUser();

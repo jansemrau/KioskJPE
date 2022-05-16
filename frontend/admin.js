@@ -375,5 +375,3 @@ const signOut = () => {
 
 getAllParticipants();
 getAllProductsTable();
-
-validateUser();
