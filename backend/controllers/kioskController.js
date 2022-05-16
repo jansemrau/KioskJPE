@@ -4,7 +4,6 @@ const Participants = require("../models/participantsModel");
 const Products = require("../models/productsModel");
 const APIFeatures = require("../utils/apiFeatures");
 const catchAsync = require("../utils/catchAsync");
-const mongoose = require("mongoose");
 
 exports.getAllParticipants = catchAsync(async (req, res, next) => {
     // EXECUTE QUERY

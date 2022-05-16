@@ -6,6 +6,9 @@ const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
 const bodyParser = require("body-parser");
+const graphqlHTTP = require("express-graphql");
+const graphqlSchema = require("./graphql/schema");
+const graphqlResolvers = require("./graphql/resolvers");
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
@@ -56,20 +59,6 @@ app.use(mongoSanitize());
 // Data sanitization against XSS
 app.use(xss());
 
-// Prevent parameter pollution
-app.use(
-    hpp({
-        whitelist: [
-            "duration",
-            "ratingsQuantity",
-            "ratingsAverage",
-            "maxGroupSize",
-            "difficulty",
-            "price",
-        ],
-    })
-);
-
 // Serving static files
 app.use(express.static(`${__dirname}/public`));
 
@@ -78,7 +67,13 @@ app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
     next();
 });
-
+app.use(
+    "/graphql",
+    graphqlHTTP({
+        schema: graphqlSchema,
+        rootValue: graphqlResolvers,
+    })
+);
 // 3) ROUTES
 app.use("/kiosk", kioskRouter);
 app.use("/auth", authRouter);
