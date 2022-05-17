@@ -85,12 +85,7 @@ const speichern = async () => {
         }),
     })
         .then(handleErrors)
-        .then((response) => {
-            response.json().then((parsedJson) => {
-                clear();
-                getAllParticipants();
-            });
-        })
+
         .catch((error) => {
             //Here is still promise
             console.log(error);
@@ -110,6 +105,11 @@ const speichern = async () => {
                 entries: purchases,
             },
         }),
+    }).then((response) => {
+        response.json().then((parsedJson) => {
+            clear();
+            getAllParticipants();
+        });
     });
 };
 
@@ -283,6 +283,7 @@ const clearEinkauf = () => {
     ).innerHTML = `Neu: <b>${guthabenNeu} €</b>`;
     document.getElementById("sum").innerHTML = `Summe: <b>${sum} €</b>`;
 };
+
 const inDenEinkaufswagen = (artikelId, artikelName, preis) => {
     if (checkGuthaben(preis)) {
         sum += preis;
@@ -296,17 +297,20 @@ const inDenEinkaufswagen = (artikelId, artikelName, preis) => {
         document.getElementById("sum").innerHTML = `Summe: <b>${sum} € </b>`;
 
         if (purchases.length > 0) {
-            for (let i = 0; i <= purchases.length; i++) {
+            let foundEntry = false;
+            for (let i = 0; i < purchases.length; i++) {
                 if (purchases[i].productID == artikelId) {
-                    purchases[i].count += 1;
+                    purchases[i].count = purchases[i].count + 1;
+                    foundEntry = true;
                     break;
-                } else {
-                    purchases.push({
-                        productID: artikelId,
-                        userID: currentId,
-                        count: 1,
-                    });
                 }
+            }
+            if (!foundEntry) {
+                purchases.push({
+                    productID: artikelId,
+                    userID: currentId,
+                    count: 1,
+                });
             }
         } else {
             purchases.push({

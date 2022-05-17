@@ -137,10 +137,10 @@ const resolverFunctions = {
         try {
             const { entries } = args;
             const db = await loadDB();
-            let newParticipant = await db.collection("Purchases").insertMany(
-                entries,
-            );
-            return "Participant created";
+            let newPurchases = await db
+                .collection("Purchases")
+                .insertMany(entries);
+            return "Purchases created";
         } catch (error) {
             throw error;
         }
