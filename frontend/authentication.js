@@ -1,4 +1,4 @@
-let path = "http://89.22.122.138";
+let path = "http://localhost:8000";
 
 const login = async () => {
     let email = document.getElementById("inputEmail").value;

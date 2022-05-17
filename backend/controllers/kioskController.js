@@ -1,7 +1,4 @@
 const AppError = require("../utils/appError");
-const Participants = require("../models/participantsModel");
-
-const Products = require("../models/productsModel");
 const APIFeatures = require("../utils/apiFeatures");
 const catchAsync = require("../utils/catchAsync");
 const graphqlResolver = require("../graphql/resolvers/index");

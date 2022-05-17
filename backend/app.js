@@ -36,14 +36,14 @@ app.use("/api", limiter);
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-        "Access-Control-Allow-Methods",
-        "GET,HEAD,OPTIONS,POST,PUT,DELETE, PATCH"
-    );
+    res.header("Access-Control-Allow-Methods", "*");
     res.header(
         "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token"
+        "Origin, x-requested-with, Content-Type, Content-Length, Accept, x-access-token"
     );
+    if (req.method === "OPTIONS") {
+        return res.status(200).end();
+    }
     next();
 });
 
@@ -67,11 +67,13 @@ app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
     next();
 });
+
 app.use(
     "/graphql",
     graphqlHTTP({
         schema: graphqlSchema,
         rootValue: graphqlResolvers,
+        graphiql: true,
     })
 );
 // 3) ROUTES

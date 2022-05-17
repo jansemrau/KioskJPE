@@ -7,7 +7,7 @@ let participants = [];
 let products = [];
 let currentId = 0;
 
-let path = "http://89.22.122.138";
+let path = "http://localhost:8000";
 
 const validateUser = async () => {
     await fetch(`${path}/auth/welcome`, {
@@ -34,21 +34,29 @@ function handleErrors(response) {
 }
 
 const getAllParticipants = async () => {
-    await fetch(`${path}/kiosk/getAllParticipants`, {
-        method: "Get",
+    await fetch(`${path}/graphql`, {
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Accept: "application/json",
         },
+        body: JSON.stringify({
+            query: `{ getAllParticipants{
+                        _id
+                        firstname
+                        lastname
+                        guthaben
+                        datumAuszahlung
+                        signature
+                    }
+                }`,
+        }),
     })
         .then(handleErrors)
         .then((response) => {
             response.json().then((parsedJson) => {
-                if (parsedJson.status !== "success") {
-                    errorElement(parsedJson.message);
-                } else {
-                    participants = parsedJson.data.participants;
-                    zeileEinfuegenTeilnehmer();
-                }
+                participants = parsedJson.data.getAllParticipants;
+                zeileEinfuegenTeilnehmer();
             });
         })
         .catch((error) => {
@@ -59,24 +67,27 @@ const getAllParticipants = async () => {
 };
 
 const speichern = async () => {
-    await fetch(`${path}/kiosk/participants/${currentId}`, {
-        method: "PATCH",
+    await fetch(`${path}/graphql`, {
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Accept: "application/json",
         },
         body: JSON.stringify({
-            guthaben: guthabenNeu,
+            query: `mutation updateGuthaben($id: ID, $guthaben: Float){
+    updateGuthaben(id: $id, guthaben: $guthaben)
+}`,
+            variables: {
+                id: currentId,
+                guthaben: guthabenNeu,
+            },
         }),
     })
         .then(handleErrors)
         .then((response) => {
             response.json().then((parsedJson) => {
-                if (parsedJson.status !== "success") {
-                    errorElement(parsedJson.message);
-                } else {
-                    clear();
-                    getAllParticipants();
-                }
+                clear();
+                getAllParticipants();
             });
         })
         .catch((error) => {
@@ -87,22 +98,27 @@ const speichern = async () => {
 };
 
 const getAllProducts = async () => {
-    await fetch(`${path}/kiosk/getAllProducts`, {
-        method: "Get",
+    fetch(`${path}/graphql`, {
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Accept: "application/json",
         },
+        body: JSON.stringify({
+            query: `{ getAllProducts{
+                        _id
+                        name
+                        price
+                    }
+                }`,
+        }),
     })
         .then(handleErrors)
         .then((response) => {
             response.json().then((parsedJson) => {
-                if (parsedJson.status !== "success") {
-                    errorElement(parsedJson.message);
-                } else {
-                    products = parsedJson.data.products;
-                    createProducts();
-                    toggleLightDark();
-                }
+                products = parsedJson.data.getAllProducts;
+                createProducts();
+                toggleLightDark();
             });
         })
         .catch((error) => {

@@ -8,8 +8,14 @@ let rowIdEinkauf = 0;
 let participants = [];
 let products = [];
 
-let path = "http://89.22.122.138";
+let path = "http://localhost:8000";
 
+function handleErrors(response) {
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+    return response;
+}
 const validateUser = async () => {
     await fetch(`${path}/auth/welcome`, {
         method: "POST",
@@ -39,15 +45,21 @@ const newParticipant = async () => {
         } else {
             guthaben = parseFloat(guthaben);
         }
-        await fetch(`${path}/kiosk/newParticipant`, {
+        await fetch(`${path}/graphql`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Accept: "application/json",
             },
             body: JSON.stringify({
-                firstname: firstname,
-                lastname: lastname,
-                guthaben: guthaben,
+                query: `mutation createParticipant($firstname: String, $lastname: String, $guthaben: Float){
+    createParticipant(firstname: $firstname, lastname: $lastname guthaben: $guthaben)
+}`,
+                variables: {
+                    firstname: firstname,
+                    lastname: lastname,
+                    guthaben: guthaben,
+                },
             }),
         }).then((response) => {
             response.json().then((parsedJson) => {
@@ -62,33 +74,24 @@ const newParticipant = async () => {
         alert("Kein gültiges Guthaben eingegeben, bitte neu eingeben");
         location.reload();
     }
-    await fetch(`${path}/kiosk/newParticipant`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            firstname: firstname,
-            lastname: lastname,
-            guthaben: guthaben,
-        }),
-    }).then((response) => {
-        response.json().then((parsedJson) => {
-            if (parsedJson.status !== "success") {
-                errorElement(parsedJson.message);
-            } else {
-                location.reload();
-            }
-        });
-    });
 };
 
 const deleteParticipant = async (id) => {
-    await fetch(`${path}/kiosk/participants/${id}`, {
-        method: "DELETE",
+    await fetch(`${path}/graphql`, {
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Accept: "application/json",
         },
+        body: JSON.stringify({
+            query: `mutation deleteParticipant($id: ID){
+    deleteParticipant(id: $id)
+}
+`,
+            variables: {
+                id: id,
+            },
+        }),
     }).then((response) => {
         location.reload();
     });
@@ -96,42 +99,60 @@ const deleteParticipant = async (id) => {
 
 const auszahlen = async (currentId, dataUrl) => {
     let datum = Date.now();
-    await fetch(`${path}/kiosk/participants/${currentId}`, {
-        method: "PATCH",
+    await fetch(`${path}/graphql`, {
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Accept: "application/json",
         },
         body: JSON.stringify({
-            signature: dataUrl,
-            datumAuszahlung: datum,
+            query: `mutation updateSignature($id: ID, $signature: String, $datumAuszahlung: Float){
+    updateSignature(id: $id, signature: $signature, datumAuszahlung: $datumAuszahlung)
+}`,
+            variables: {
+                id: currentId,
+                signature: dataUrl,
+                datumAuszahlung: datum,
+            },
         }),
     }).then((response) => {
         response.json().then((parsedJson) => {
-            if (parsedJson.status !== "success") {
-                errorElement(parsedJson.message);
-            } else {
-                location.reload();
-            }
+            location.reload();
         });
     });
 };
 
 const getAllParticipants = async () => {
-    await fetch(`${path}/kiosk/getAllParticipants`, {
-        method: "Get",
+    await fetch(`${path}/graphql`, {
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Accept: "application/json",
         },
-    }).then((response) => {
-        response.json().then((parsedJson) => {
-            if (parsedJson.status !== "success") {
-                errorElement(parsedJson.message);
-            } else {
-                participants = parsedJson.data.participants;
+        body: JSON.stringify({
+            query: `{ getAllParticipants{
+                        _id
+                        firstname
+                        lastname
+                        guthaben
+                        datumAuszahlung
+                        signature
+                    }
+                }`,
+        }),
+    })
+        .then(handleErrors)
+        .then((response) => {
+            response.json().then((parsedJson) => {
+                participants = parsedJson.data.getAllParticipants;
                 zeileEinfuegenTeilnehmer();
-            }
+            });
+        })
+        .catch((error) => {
+            //Here is still promise
+            console.log(error);
+            errorElement(error);
         });
-    });
 };
 
 const zeileEinfuegenTeilnehmer = () => {
@@ -252,21 +273,33 @@ const zeileEinfuegenTeilnehmer = () => {
 };
 
 const getAllProductsTable = async () => {
-    await fetch(`${path}/kiosk/getAllProducts`, {
-        method: "Get",
+    await fetch(`${path}/graphql`, {
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Accept: "application/json",
         },
-    }).then((response) => {
-        response.json().then((parsedJson) => {
-            if (parsedJson.status !== "success") {
-                errorElement(parsedJson.message);
-            } else {
-                productsTable = parsedJson.data.products;
+        body: JSON.stringify({
+            query: `{ getAllProducts{
+                        _id
+                        name
+                        price
+                    }
+                }`,
+        }),
+    })
+        .then(handleErrors)
+        .then((response) => {
+            response.json().then((parsedJson) => {
+                productsTable = parsedJson.data.getAllProducts;
                 createProductsTable();
-            }
+            });
+        })
+        .catch((error) => {
+            //Here is still promise
+            console.log(error);
+            errorElement(error);
         });
-    });
 };
 
 function createProductsTable() {
@@ -315,54 +348,66 @@ const newProduct = async (event) => {
         } else {
             price = parseFloat(price);
         }
-        await fetch(`${path}/kiosk/newProduct`, {
+        await fetch(`${path}/graphql`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Accept: "application/json",
             },
             body: JSON.stringify({
-                name: name,
-                price: price,
+                query: `mutation createProduct($name: String, $price: Float){
+    createProduct(name: $name, price: $price)
+}`,
+                variables: {
+                    name: name,
+                    price: price,
+                },
             }),
         }).then((response) => {
             response.json().then((parsedJson) => {
-                if (parsedJson.status !== "success") {
-                    errorElement(parsedJson.message);
-                } else {
-                    location.reload();
-                }
+                location.reload();
             });
         });
     } else {
         alert("Keinen gültigen Preis eingegeben, bitte neu eingeben");
         location.reload();
     }
-    await fetch(`${path}/kiosk/newProduct`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            signature: dataUrl,
-            datumAuszahlung: datum,
-        }),
-    }).then((response) => {
-        response.json().then((parsedJson) => {
-            if (parsedJson.status !== "success") {
-                errorElement(parsedJson.message);
-            } else {
-                location.reload();
-            }
-        });
-    });
+    // TODO What is this code doing??
+    // await fetch(`${path}/kiosk/newProduct`, {
+    //     method: "POST",
+    //     headers: {
+    //         "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //         signature: dataUrl,
+    //         datumAuszahlung: datum,
+    //     }),
+    // }).then((response) => {
+    //     response.json().then((parsedJson) => {
+    //         if (parsedJson.status !== "success") {
+    //             errorElement(parsedJson.message);
+    //         } else {
+    //             location.reload();
+    //         }
+    //     });
+    // });
 };
 
 const deleteProduct = async (id) => {
-    await fetch(`${path}/kiosk/products/${id}`, {
-        method: "DELETE",
+    await fetch(`${path}/graphql`, {
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Accept: "application/json",
         },
+        body: JSON.stringify({
+            query: `mutation deleteProduct($id: ID){
+    deleteProduct(id: $id)
+}`,
+            variables: {
+                id: id,
+            },
+        }),
     }).then((response) => {
         location.reload();
     });
