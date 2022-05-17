@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="index.css">
     <title>Kiosk JPE</title>
 </head>
-<body >
+<body onload="validateUser()">
     <div class="container">
         <div id="suessigkeitenContainer" class="suessigkeitenContainer">
         </div>
@@ -42,7 +42,6 @@
         </div>
         <div id="settings" class="settings">
             <a href="http://89.22.122.138/admin" class="button">Admin</a>
-            <button class="button" onclick="speichern()">Umrechnung</button>
             <button class="button" onclick="toggleLightDark()">Hell / Dunkel</button>
         </div>
         <div id="speichern">

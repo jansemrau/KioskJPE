@@ -12,7 +12,6 @@ const graphqlResolvers = require("./graphql/resolvers");
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
-const kioskRouter = require("./routes/kioskRouter");
 const authRouter = require("./authentication/authRouter");
 
 const app = express();
@@ -77,7 +76,6 @@ app.use(
     })
 );
 // 3) ROUTES
-app.use("/kiosk", kioskRouter);
 app.use("/auth", authRouter);
 
 app.all("*", (req, res, next) => {

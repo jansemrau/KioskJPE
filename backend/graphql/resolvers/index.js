@@ -8,6 +8,7 @@ const resolverFunctions = {
             let productsFetches = await db
                 .collection("Products")
                 .find()
+                .sort({ name: 1 })
                 .toArray();
             console.log(productsFetches);
             return productsFetches.map((product) => {
@@ -27,6 +28,7 @@ const resolverFunctions = {
             const participantsFetches = await db
                 .collection("Participants")
                 .find()
+                .sort({ firstname: 1 })
                 .toArray();
             console.log(participantsFetches);
             return participantsFetches.map((participant) => {
