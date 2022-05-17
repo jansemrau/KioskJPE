@@ -6,10 +6,12 @@ const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
 const bodyParser = require("body-parser");
+const { graphqlHTTP } = require("express-graphql");
+const graphqlSchema = require("./graphql/schema/schema");
+const graphqlResolvers = require("./graphql/resolvers");
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
-const kioskRouter = require("./routes/kioskRouter");
 const authRouter = require("./authentication/authRouter");
 
 const app = express();
@@ -33,14 +35,14 @@ app.use("/api", limiter);
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-        "Access-Control-Allow-Methods",
-        "GET,HEAD,OPTIONS,POST,PUT,DELETE, PATCH"
-    );
+    res.header("Access-Control-Allow-Methods", "*");
     res.header(
         "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token"
+        "Origin, x-requested-with, Content-Type, Content-Length, Accept, x-access-token"
     );
+    if (req.method === "OPTIONS") {
+        return res.status(200).end();
+    }
     next();
 });
 
@@ -56,20 +58,6 @@ app.use(mongoSanitize());
 // Data sanitization against XSS
 app.use(xss());
 
-// Prevent parameter pollution
-app.use(
-    hpp({
-        whitelist: [
-            "duration",
-            "ratingsQuantity",
-            "ratingsAverage",
-            "maxGroupSize",
-            "difficulty",
-            "price",
-        ],
-    })
-);
-
 // Serving static files
 app.use(express.static(`${__dirname}/public`));
 
@@ -79,8 +67,15 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use(
+    "/graphql",
+    graphqlHTTP({
+        schema: graphqlSchema,
+        rootValue: graphqlResolvers,
+        graphiql: true,
+    })
+);
 // 3) ROUTES
-app.use("/kiosk", kioskRouter);
 app.use("/auth", authRouter);
 
 app.all("*", (req, res, next) => {

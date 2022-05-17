@@ -69,20 +69,28 @@ const createPrintableTable = () => {
 
 const druckeTeilnehmer = async () => {
     console.log("Ja");
-    await fetch("http://89.22.122.138/kiosk/getAllParticipants", {
-        method: "Get",
+    await fetch(`${path}/graphql`, {
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Accept: "application/json",
         },
+        body: JSON.stringify({
+            query: `{ getAllParticipants{
+                        _id
+                        firstname
+                        lastname
+                        guthaben
+                        datumAuszahlung
+                        signature
+                    }
+                }`,
+        }),
     }).then((response) => {
         response.json().then((parsedJson) => {
-            if (parsedJson.status !== "success") {
-                errorElement(parsedJson.message);
-            } else {
-                teilnehmer = parsedJson.data.participants;
-                createPrintableTable();
-                printData();
-            }
+            teilnehmer = parsedJson.data.getAllParticipants;
+            createPrintableTable();
+            printData();
         });
     });
 };
