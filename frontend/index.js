@@ -6,6 +6,7 @@ let rowIdEinkauf = 1;
 let participants = [];
 let products = [];
 let currentId = 0;
+let purchases = [];
 
 let path = "http://89.22.122.138";
 
@@ -95,6 +96,21 @@ const speichern = async () => {
             console.log(error);
             errorElement(error);
         });
+    await fetch(`${path}/graphql`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+        },
+        body: JSON.stringify({
+            query: `mutation insertPurchases($entries: [InputPurchase]){
+    insertPurchases(entries: $entries)
+}`,
+            variables: {
+                entries: purchases,
+            },
+        }),
+    });
 };
 
 const getAllProducts = async () => {
@@ -258,6 +274,7 @@ const clearEinkauf = () => {
     sum = 0;
     rowIdEinkauf = 1;
     currentId = 0;
+    purchases = [];
     document.getElementById(
         "guthabenAlt"
     ).innerHTML = `Alt: <b>${guthabenAlt} €</b>`;
@@ -278,6 +295,26 @@ const inDenEinkaufswagen = (artikelId, artikelName, preis) => {
         ).innerHTML = `Neu: <b>${guthabenNeu} €</b>`;
         document.getElementById("sum").innerHTML = `Summe: <b>${sum} € </b>`;
 
+        if (purchases.length > 0) {
+            for (let i = 0; i <= purchases.length; i++) {
+                if (purchases[i].productID == artikelId) {
+                    purchases[i].count += 1;
+                    break;
+                } else {
+                    purchases.push({
+                        productID: artikelId,
+                        userID: currentId,
+                        count: 1,
+                    });
+                }
+            }
+        } else {
+            purchases.push({
+                productID: artikelId,
+                userID: currentId,
+                count: 1,
+            });
+        }
         zeileEinfuegenEinkauf(artikelId, artikelName, preis);
     } else {
         alert("Nicht genug Guthaben");
@@ -293,6 +330,11 @@ const ausDemEinkaufswagen = (preis, id) => {
     guthabenNeu += preis;
     guthabenNeu = parseFloat(guthabenNeu.toFixed(2));
     rowIdEinkauf--;
+
+    const index = purchases.indexOf(id);
+    if (index > -1) {
+        purchases.splice(index, 1);
+    }
 
     document.getElementById(
         "guthabenNeu"

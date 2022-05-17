@@ -133,6 +133,18 @@ const resolverFunctions = {
             throw error;
         }
     },
+    insertPurchases: async (args) => {
+        try {
+            const { entries } = args;
+            const db = await loadDB();
+            let newParticipant = await db.collection("Purchases").insertMany(
+                entries,
+            );
+            return "Participant created";
+        } catch (error) {
+            throw error;
+        }
+    },
 };
 
 module.exports = {
@@ -144,4 +156,5 @@ module.exports = {
     createProduct: resolverFunctions.createProduct,
     deleteParticipant: resolverFunctions.deleteParticipant,
     deleteProduct: resolverFunctions.deleteProduct,
+    insertPurchases: resolverFunctions.insertPurchases,
 };

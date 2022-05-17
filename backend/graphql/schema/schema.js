@@ -14,6 +14,17 @@ module.exports = buildSchema(`
        name: String
        price: Float
      },
+     type Purchase{
+       _id: ID
+       productID: ID
+       userID: ID
+       count: Int
+     }
+     input InputPurchase{
+       productID: ID
+       userID: ID
+       count: Int
+     }
       type Query {
         getAllParticipants: [Participant]
         getAllProducts: [Product]
@@ -25,6 +36,7 @@ module.exports = buildSchema(`
        deleteParticipant(id: ID): String,
        deleteProduct(id: ID): String
        updateSignature(id: ID, signature: String, datumAuszahlung: Float): String
+       insertPurchases(entries: [InputPurchase]): String
      },
       schema {
         query: Query
