@@ -17,7 +17,8 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.KEY }}
+        key: ${{ secrets.SSH2 }}
+        passphrase: ${{ secrets.PASSPHRASE }}
         port: ${{ secrets.PORT }}
         script: |
           cd /var/www/kioskJPE
