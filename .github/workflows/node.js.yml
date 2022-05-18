@@ -43,5 +43,5 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
           cd /var/www/kioskJPE/html
-          tar xvfz frontend.tar.gz
+          tar xvfz frontend.tar.gz 
           rm frontend.tar.gz
