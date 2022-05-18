@@ -11,9 +11,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-    - name: Remove old files
-      run: tar cvfz frontend.tar.gz frontend/*
-     
     - uses: actions/checkout@master
     - name: Remove old files
       uses: appleboy/ssh-action@master
