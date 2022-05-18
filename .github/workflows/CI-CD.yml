@@ -14,8 +14,18 @@ jobs:
     - uses: actions/checkout@master
     - name: Tar files Backend
       run: tar -cvfz backend.tar.gz backend/*
+    - name: Upload Artifact Backend
+      uses: actions/upload-artifact@v3
+      with:
+        name: backend
+        path: backend.tar.gz
     - name: Tar files Frontend
       run: tar -cvfz frontend.tar.gz frontend/
+    - name: Upload Artifact Frontend
+      uses: actions/upload-artifact@v3
+      with:
+        name: frontend
+        path: frontend.tar.gz
 
     - name: Remove old files
       uses: appleboy/ssh-action@master
