@@ -12,6 +12,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
+    - name: multiple command
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd /var/www/kioskJPE
+          rm -rf html/*
     - name: copy file via ssh password
       uses: appleboy/scp-action@master
       with:
@@ -21,7 +31,4 @@ jobs:
         passphrase: ${{ secrets.PASSPHRASE }}
         port: ${{ secrets.PORT }}
         source: "frontend.tar.gz"
-        script: |
-          cd /var/www/kioskJPE/
-          rm -rf html/
         target: "/var/www/kioskJPE/html"
