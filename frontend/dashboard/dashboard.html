@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="dashboard.css">
+    <title>Kiosk JPE - Admin</title>
+</head>
+<body>
+    <div class="container" id="container">
+        <button class="button" style="width: fit-content" onclick="druckePurchases()">drucken</button>
+        <table
+            style="border: 1px solid black; font-family: Arial, Helvetica, sans-serif; font-size: 1rem; border-collapse:collapse;"
+            id="printTable" class="printTable">
+            <thead>
+                <tr>
+                    <th>Vorname</th>
+                    <th>Nachname</th>
+                    <th>Anzahl</th>
+                    <th>Produkt</th>
+                    <th>Gekauft am</th>
+                </tr>
+            </thead>
+            <tbody id="printTableBody">
+            </tbody>
+        </table>
+    </div>
+    
+    <script src="dashboard.js"></script>
+</body>
+</html>

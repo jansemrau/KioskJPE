@@ -8,7 +8,7 @@ let rowIdEinkauf = 0;
 let participants = [];
 let products = [];
 
-let path = "http://89.22.122.138";
+let path = "http://localhost:8000";
 
 function handleErrors(response) {
     if (!response.ok) {
@@ -257,9 +257,17 @@ const zeileEinfuegenTeilnehmer = () => {
             });
         }
 
+        let purchasesButton = document.createElement("button");
+        purchasesButton.setAttribute("class", "button button--fullwidth");
+        purchasesButton.innerHTML = "Einkäufe";
+        purchasesButton.addEventListener("click", function () {
+            druckePurchases(el._id);
+        });
+
         let zelle4 = reihe.insertCell();
         zelle4.appendChild(deleteButton);
         zelle4.appendChild(auszahlenButton);
+        zelle4.appendChild(purchasesButton);
 
         reihe.setAttribute("rowId", rowIdTeilnehmer++);
         reihe.setAttribute("personId", el._id);

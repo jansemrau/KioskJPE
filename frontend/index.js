@@ -6,8 +6,9 @@ let rowIdEinkauf = 1;
 let participants = [];
 let products = [];
 let currentId = 0;
+let purchases = [];
 
-let path = "http://89.22.122.138";
+let path = "http://localhost:8000";
 
 const validateUser = async () => {
     await fetch(`${path}/auth/welcome`, {
@@ -84,17 +85,32 @@ const speichern = async () => {
         }),
     })
         .then(handleErrors)
-        .then((response) => {
-            response.json().then((parsedJson) => {
-                clear();
-                getAllParticipants();
-            });
-        })
+
         .catch((error) => {
             //Here is still promise
             console.log(error);
             errorElement(error);
         });
+    await fetch(`${path}/graphql`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+        },
+        body: JSON.stringify({
+            query: `mutation insertPurchases($entries: [InputPurchase]){
+    insertPurchases(entries: $entries)
+}`,
+            variables: {
+                entries: purchases,
+            },
+        }),
+    }).then((response) => {
+        response.json().then((parsedJson) => {
+            clear();
+            getAllParticipants();
+        });
+    });
 };
 
 const getAllProducts = async () => {
@@ -136,7 +152,11 @@ const createProducts = async () => {
         const button = document.createElement("button");
         button.setAttribute("class", "suessigkeit");
         button.addEventListener("click", function () {
-            inDenEinkaufswagen(i, products[i].name, products[i].price);
+            inDenEinkaufswagen(
+                products[i]._id,
+                products[i].name,
+                products[i].price
+            );
         });
         button.innerHTML = `<b>${products[i].name}</b> <br> ${products[i].price} €`;
         suessigkeitenContainer.insertAdjacentElement("beforeend", button);
@@ -258,6 +278,7 @@ const clearEinkauf = () => {
     sum = 0;
     rowIdEinkauf = 1;
     currentId = 0;
+    purchases = [];
     document.getElementById(
         "guthabenAlt"
     ).innerHTML = `Alt: <b>${guthabenAlt} €</b>`;
@@ -266,6 +287,7 @@ const clearEinkauf = () => {
     ).innerHTML = `Neu: <b>${guthabenNeu} €</b>`;
     document.getElementById("sum").innerHTML = `Summe: <b>${sum} €</b>`;
 };
+
 const inDenEinkaufswagen = (artikelId, artikelName, preis) => {
     if (checkGuthaben(preis)) {
         sum += preis;
@@ -278,6 +300,31 @@ const inDenEinkaufswagen = (artikelId, artikelName, preis) => {
         ).innerHTML = `Neu: <b>${guthabenNeu} €</b>`;
         document.getElementById("sum").innerHTML = `Summe: <b>${sum} € </b>`;
 
+        if (purchases.length > 0) {
+            let foundEntry = false;
+            for (let i = 0; i < purchases.length; i++) {
+                if (purchases[i].productID == artikelId) {
+                    purchases[i].count = purchases[i].count + 1;
+                    foundEntry = true;
+                    break;
+                }
+            }
+            if (!foundEntry) {
+                purchases.push({
+                    productID: artikelId,
+                    userID: currentId,
+                    count: 1,
+                    date: Date.now(),
+                });
+            }
+        } else {
+            purchases.push({
+                productID: artikelId,
+                userID: currentId,
+                count: 1,
+                date: Date.now(),
+            });
+        }
         zeileEinfuegenEinkauf(artikelId, artikelName, preis);
     } else {
         alert("Nicht genug Guthaben");
@@ -293,6 +340,11 @@ const ausDemEinkaufswagen = (preis, id) => {
     guthabenNeu += preis;
     guthabenNeu = parseFloat(guthabenNeu.toFixed(2));
     rowIdEinkauf--;
+
+    const index = purchases.indexOf(id);
+    if (index > -1) {
+        purchases.splice(index, 1);
+    }
 
     document.getElementById(
         "guthabenNeu"
