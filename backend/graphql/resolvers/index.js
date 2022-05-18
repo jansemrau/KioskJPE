@@ -10,7 +10,6 @@ const resolverFunctions = {
                 .find()
                 .sort({ name: 1 })
                 .toArray();
-            console.log(productsFetches);
             return productsFetches.map((product) => {
                 return {
                     _id: product._id,
@@ -30,7 +29,6 @@ const resolverFunctions = {
                 .find()
                 .sort({ firstname: 1 })
                 .toArray();
-            console.log(participantsFetches);
             return participantsFetches.map((participant) => {
                 return {
                     _id: participant._id,
@@ -136,11 +134,62 @@ const resolverFunctions = {
     insertPurchases: async (args) => {
         try {
             const { entries } = args;
+            entries.map((e) => {
+                e.productID = ObjectId(e.productID);
+                e.userID = ObjectId(e.userID);
+            });
             const db = await loadDB();
             let newPurchases = await db
                 .collection("Purchases")
                 .insertMany(entries);
             return "Purchases created";
+        } catch (error) {
+            throw error;
+        }
+    },
+    getAllPurchases: async (args) => {
+        try {
+            const db = await loadDB();
+            let purchaseFetches = await db
+                .collection("Purchases")
+                .aggregate([
+                    {
+                        $lookup: {
+                            from: "Products",
+                            localField: "productID",
+                            foreignField: "_id",
+                            as: "product",
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: "Participants",
+                            localField: "userID",
+                            foreignField: "_id",
+                            as: "user",
+                        },
+                    },
+                    {
+                        $match: {
+                            $and: [
+                                {
+                                    "user._id": ObjectId(args.userID),
+                                },
+                            ],
+                        },
+                    },
+                ])
+                .toArray();
+            return purchaseFetches.map((purchase) => {
+                return {
+                    _id: purchase._id,
+                    firstname: purchase.user[0].firstname,
+                    lastname: purchase.user[0].lastname,
+                    productname: purchase.product[0].name,
+                    count: purchase.count,
+                    date: new Date(purchase.date),
+                };
+            });
         } catch (error) {
             throw error;
         }
@@ -157,4 +206,5 @@ module.exports = {
     deleteParticipant: resolverFunctions.deleteParticipant,
     deleteProduct: resolverFunctions.deleteProduct,
     insertPurchases: resolverFunctions.insertPurchases,
+    getAllPurchases: resolverFunctions.getAllPurchases,
 };

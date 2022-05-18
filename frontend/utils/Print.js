@@ -1,18 +1,23 @@
 let teilnehmer = [];
 
-function printData() {
-    var divToPrint = document.getElementById("printTable");
-    let newWin = window.open("");
-    newWin.document.write("<html><body><div id='table'></div></body></html>");
-    const table = newWin.document.getElementById("table");
-    table.appendChild(divToPrint);
-    setTimeout(function () {
-        newWin.print();
-    }, 500);
-}
-
 const createPrintableTable = () => {
-    const tabelle = document.getElementById("printTable");
+    let newWin = window.open("");
+    newWin.document.write(`<html><body><div id='table'><table
+            style="border: 1px solid black; font-family: Arial, Helvetica, sans-serif; font-size: 1rem; border-collapse:collapse;"
+            id="printTable"
+            class="printTable"
+        >
+            <thead>
+                <tr>
+                    <th>Vorname</th>
+                    <th>Nachname</th>
+                    <th>Guthaben</th>
+                    <th>Unterschrift</th>
+                </tr>
+            </thead>
+            <tbody id="printTableBody"></tbody>
+        </table></div></body></html>`);
+    const tabelle = newWin.document.getElementById("printTable");
     // schreibe Tabellenzeile
     teilnehmer.forEach((el) => {
         const reihe = tabelle.insertRow(-1);
@@ -65,6 +70,9 @@ const createPrintableTable = () => {
         zelle4.style.border = "1px solid black";
         zelle4.appendChild(image);
     });
+    setTimeout(function () {
+        newWin.print();
+    }, 500);
 };
 
 const druckeTeilnehmer = async () => {
@@ -90,7 +98,6 @@ const druckeTeilnehmer = async () => {
         response.json().then((parsedJson) => {
             teilnehmer = parsedJson.data.getAllParticipants;
             createPrintableTable();
-            printData();
         });
     });
 };

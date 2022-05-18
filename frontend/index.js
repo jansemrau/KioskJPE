@@ -8,7 +8,7 @@ let products = [];
 let currentId = 0;
 let purchases = [];
 
-let path = "http://89.22.122.138";
+let path = "http://localhost:8000";
 
 const validateUser = async () => {
     await fetch(`${path}/auth/welcome`, {
@@ -152,7 +152,11 @@ const createProducts = async () => {
         const button = document.createElement("button");
         button.setAttribute("class", "suessigkeit");
         button.addEventListener("click", function () {
-            inDenEinkaufswagen(i, products[i].name, products[i].price);
+            inDenEinkaufswagen(
+                products[i]._id,
+                products[i].name,
+                products[i].price
+            );
         });
         button.innerHTML = `<b>${products[i].name}</b> <br> ${products[i].price} €`;
         suessigkeitenContainer.insertAdjacentElement("beforeend", button);
@@ -310,6 +314,7 @@ const inDenEinkaufswagen = (artikelId, artikelName, preis) => {
                     productID: artikelId,
                     userID: currentId,
                     count: 1,
+                    date: Date.now(),
                 });
             }
         } else {
@@ -317,6 +322,7 @@ const inDenEinkaufswagen = (artikelId, artikelName, preis) => {
                 productID: artikelId,
                 userID: currentId,
                 count: 1,
+                date: Date.now(),
             });
         }
         zeileEinfuegenEinkauf(artikelId, artikelName, preis);

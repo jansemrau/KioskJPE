@@ -14,20 +14,24 @@ module.exports = buildSchema(`
        name: String
        price: Float
      },
-     type Purchase{
+     type AllPurchases{
        _id: ID
-       productID: ID
-       userID: ID
-       count: Int
+        firstname: String
+        lastname: String
+        productname: String
+        count: Int
+        date: Float
      }
      input InputPurchase{
        productID: ID
        userID: ID
        count: Int
+       date: Float
      }
       type Query {
         getAllParticipants: [Participant]
         getAllProducts: [Product]
+        getAllPurchases(userID: String): [AllPurchases]
       },
      type Mutation {
        updateGuthaben(id: ID, guthaben: Float): String
