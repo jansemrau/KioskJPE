@@ -16,8 +16,8 @@ jobs:
     - name: Build project
       id: build
       shell: bash
+      working-directory: ./backend
       run: |
-        cd jansemrau/KioskJPE/backend
         npm i
         cd ..
         tar cvfz backend.tar.gz backend/*
