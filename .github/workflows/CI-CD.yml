@@ -1,0 +1,75 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: CI-CD
+
+on:
+  push: 
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Tar files Backend
+      run: tar -cvfz backend.tar.gz backend/*
+    - name: Tar files Frontend
+      run: tar -cvfz frontend.tar.gz frontend/
+
+    - name: Remove old files
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH2 }}
+        passphrase: ${{ secrets.PASSPHRASE }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd /var/www/kioskJPE
+          rm -rf /html/*
+          cd /home/jansemrau/backends/kioskJPE
+          rm -rf /backend/*
+    - name: copy Backend via ssh password
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH2 }}
+        passphrase: ${{ secrets.PASSPHRASE }}
+        port: ${{ secrets.PORT }}
+        source: "backend.tar.gz"
+        target: "/home/jansemrau/backends/kioskJPE"
+    - name: copy Frontend via ssh password
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH2 }}
+        passphrase: ${{ secrets.PASSPHRASE }}
+        port: ${{ secrets.PORT }}
+        source: "frontend.tar.gz"
+        target: "/var/www/kioskJPE"
+    - name: Extract new files
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH2 }}
+        passphrase: ${{ secrets.PASSPHRASE }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd /home/jansemrau/backends/kioskJPE
+          tar xvfz backend.tar.gz 
+          rm backend.tar.gz
+          cd backend
+          pm2 delete kioskJPE
+          pm2 start server.js --name kioskJPE
+          pm2 save
+          
+          cd /var/www/kioskJPE
+          mkdir html
+          tar xvfz frontend.tar.gz 
+          cp -r frontend/* html
+          rm frontend.tar.gz
+          rm -rf frontend
