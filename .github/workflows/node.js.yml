@@ -22,7 +22,7 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
           cd /var/www/kioskJPE
-          ls
+          rm -r html/*
     - name: copy file via ssh password
       uses: appleboy/scp-action@master
       with:
