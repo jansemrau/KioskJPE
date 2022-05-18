@@ -16,7 +16,7 @@ jobs:
     - name: Build project
       id: build
       shell: bash
-      working-directory: ./backend
+      working-directory: project/backend
       run: |
         npm i
         cd ..
