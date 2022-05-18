@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: multiple command
+    - name: Remove old files
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
@@ -33,3 +33,15 @@ jobs:
         port: ${{ secrets.PORT }}
         source: "frontend.tar.gz"
         target: "/var/www/kioskJPE/html"
+    - name: Extract new files
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH2 }}
+        passphrase: ${{ secrets.PASSPHRASE }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd /var/www/kioskJPE/html
+          tar xvfz frontend.tar.gz ./
+          rm frontend.tar.gz
