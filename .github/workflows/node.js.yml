@@ -23,7 +23,19 @@ jobs:
         script: |
           cd /var/www/kioskJPE
           rm -rf /html/*
-    - name: copy file via ssh password
+          cd /home/jansemrau/backends/kioskJPE
+          rm -rf /backend/*
+    - name: copy Backend via ssh password
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH2 }}
+        passphrase: ${{ secrets.PASSPHRASE }}
+        port: ${{ secrets.PORT }}
+        source: "backend.tar.gz"
+        target: "/home/jansemrau/backends/kioskJPE"
+    - name: copy Frontend via ssh password
       uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.HOST }}
@@ -42,6 +54,14 @@ jobs:
         passphrase: ${{ secrets.PASSPHRASE }}
         port: ${{ secrets.PORT }}
         script: |
+          cd /home/jansemrau/backends/kioskJPE
+          tar xvfz backend.tar.gz 
+          rm backend.tar.gz
+          cd backend
+          pm2 delete kioskJPE
+          pm2 start server.js --name kioskJPE
+          pm2 save
+          
           cd /var/www/kioskJPE
           mkdir html
           tar xvfz frontend.tar.gz 

@@ -8,7 +8,7 @@ let rowIdEinkauf = 0;
 let participants = [];
 let products = [];
 
-let path = "http://localhost:8000";
+let path = "http://89.22.122.138";
 
 function handleErrors(response) {
     if (!response.ok) {

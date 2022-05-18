@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="admin.css">
     <title>Kiosk JPE - Admin</title>
 </head>
-<body>
+<body onload="validateUser()">
     <div class="container" id="container">
     <a href="index.html" class="button" style="width: fit-content">Kiosk</a>
         <button class="button" style="width: fit-content" onclick="druckeTeilnehmer()">drucken</button>
@@ -79,12 +79,22 @@
             <button class="button button--inline" id="sig-cancellationBtnImage">Zurück</button>
         </div>  
     </div>
-
+    <table style="border: 1px solid black; font-family: Arial, Helvetica, sans-serif; font-size: 1rem; border-collapse:collapse;" id="printTable" class="printTable">
+        <thead>
+            <tr>
+                <th>Vorname</th>
+                <th>Nachname</th>
+                <th>Guthaben</th>
+                <th>Unterschrift</th>
+            </tr>
+        </thead>
+        <tbody id="printTableBody">
+        </tbody>
+    </table>
     <script src="admin.js"></script>
     <script src="utils/Canvas.js"></script>
     <script src="utils/Modal.js"></script>
     <script src="utils/Print.js"></script>
-    <script src="dashboard/dashboard.js"></script>
     <script>
         window.addEventListener('load', function () {
             setTimeout(function () {
