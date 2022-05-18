@@ -45,6 +45,6 @@ jobs:
           cd /var/www/kioskJPE
           mkdir html
           tar xvfz frontend.tar.gz 
-          cp frontend/* html
+          cp -r frontend/* html
           rm frontend.tar.gz
           rm -rf frontend
