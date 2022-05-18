@@ -13,9 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - run: npm i
     - name: Build project
       id: build
       shell: bash
       run: |
+        cd backend
+        npm i
+        cd ..
         tar cvfz backend.tar.gz backend/*
