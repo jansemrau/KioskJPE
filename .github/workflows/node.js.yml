@@ -42,6 +42,8 @@ jobs:
         passphrase: ${{ secrets.PASSPHRASE }}
         port: ${{ secrets.PORT }}
         script: |
-          cd /var/www/kioskJPE/html
+          cd /var/www/kioskJPE
           tar xvfz frontend.tar.gz 
+          cp frontend/* html/
           rm frontend.tar.gz
+          rm -f frontend
