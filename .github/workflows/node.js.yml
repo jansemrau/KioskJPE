@@ -4,8 +4,7 @@
 name: scp files
 
 on:
-  push:
-    branches: [ main ]
+  push: 
 
 jobs:
   build:
