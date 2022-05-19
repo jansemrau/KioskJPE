@@ -91,7 +91,7 @@ const resolverFunctions = {
             throw error;
         }
     },
-    updateGuthaben: async (args) => {
+    updateCredit: async (args) => {
         try {
             const id = args.id;
             const creditNew = args.credit;
@@ -199,7 +199,7 @@ const resolverFunctions = {
 module.exports = {
     getAllParticipants: resolverFunctions.getAllParticipants,
     getAllProducts: resolverFunctions.getAllProducts,
-    updateGuthaben: resolverFunctions.updateGuthaben,
+    updateCredit: resolverFunctions.updateCredit,
     updateSignature: resolverFunctions.updateSignature,
     createParticipant: resolverFunctions.createParticipant,
     createProduct: resolverFunctions.createProduct,

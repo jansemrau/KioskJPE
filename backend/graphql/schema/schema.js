@@ -34,7 +34,7 @@ module.exports = buildSchema(`
         getAllPurchases(userID: String): [AllPurchases]
       },
      type Mutation {
-       updateGuthaben(id: ID, guthaben: Float): String
+       updateCredit(id: ID, credit: Float): String
        createParticipant(firstname: String, lastname: String, credit: Float): String
        createProduct(name: String, price: Float): String
        deleteParticipant(id: ID): String,
