@@ -1,6 +1,4 @@
-const createPrintableTable = () => {
-    let newWin = window.open("");
-    newWin.location.href = url;
+const createPrintableTable = (newWin) => {
     newWin.document.write(`<html><body><div id='table'><table
             style="border: 1px solid black; font-family: Arial, Helvetica, sans-serif; font-size: 1rem; border-collapse:collapse;"
             id="printTable"
@@ -73,6 +71,7 @@ const createPrintableTable = () => {
 };
 
 const printParticipants = async () => {
+    let newWin = window.open("");
     await fetch(`${path}/graphql`, {
         method: "POST",
         headers: {
@@ -93,7 +92,7 @@ const printParticipants = async () => {
     }).then((response) => {
         response.json().then((parsedJson) => {
             participants = parsedJson.data.getAllParticipants;
-            createPrintableTable();
+            createPrintableTable(newWin);
         });
     });
 };
