@@ -6,7 +6,7 @@ module.exports = buildSchema(`
         firstname: String
         lastname: String
         credit: Float
-        datePayout: Float
+        datePayment: Float
         signature: String
       },
       type Product {
