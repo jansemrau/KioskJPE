@@ -75,8 +75,8 @@ const save = async () => {
             Accept: "application/json",
         },
         body: JSON.stringify({
-            query: `mutation updateGuthaben($id: ID, $credit: Float){
-    updateGuthaben(id: $id, credit: $credit)
+            query: `mutation updateCredit($id: ID, $credit: Float){
+    updateCredit(id: $id, credit: $credit)
 }`,
             variables: {
                 id: currentId,
@@ -145,9 +145,7 @@ const getAllProducts = async () => {
 };
 
 const createProducts = async () => {
-    const sweetsContainer = document.getElementById(
-        "sweetsContainer"
-    );
+    const sweetsContainer = document.getElementById("sweetsContainer");
     for (let i = 0; i < products.length; i++) {
         const button = document.createElement("button");
         button.setAttribute("class", "sweets");
@@ -370,9 +368,7 @@ function toggleLightDark() {
     let elementsWhite = [];
     let elementsGray = [];
     let elementsText = [];
-    elementsGray.push(
-        document.getElementsByClassName("sweetsContainer")[0]
-    );
+    elementsGray.push(document.getElementsByClassName("sweetsContainer")[0]);
 
     elementsGray.push(document.getElementsByClassName("purchase")[0]);
     elementsWhite.push(
@@ -390,9 +386,8 @@ function toggleLightDark() {
     for (let i = 0; i < sweets.length; i++) {
         elementsText.push(sweets[i]);
     }
-    let accountingElement = document.getElementsByClassName(
-        "accountingElement"
-    );
+    let accountingElement =
+        document.getElementsByClassName("accountingElement");
     for (let i = 0; i < accountingElement.length; i++) {
         elementsText.push(accountingElement[i]);
     }
