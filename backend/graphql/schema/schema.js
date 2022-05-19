@@ -5,8 +5,8 @@ module.exports = buildSchema(`
         _id: ID
         firstname: String
         lastname: String
-        guthaben: Float
-        datumAuszahlung: Float
+        credit: Float
+        datePayout: Float
         signature: String
       },
       type Product {
@@ -35,11 +35,11 @@ module.exports = buildSchema(`
       },
      type Mutation {
        updateGuthaben(id: ID, guthaben: Float): String
-       createParticipant(firstname: String, lastname: String, guthaben: Float): String
+       createParticipant(firstname: String, lastname: String, credit: Float): String
        createProduct(name: String, price: Float): String
        deleteParticipant(id: ID): String,
        deleteProduct(id: ID): String
-       updateSignature(id: ID, signature: String, datumAuszahlung: Float): String
+       updateSignature(id: ID, signature: String, datePayment: Float): String
        insertPurchases(entries: [InputPurchase]): String
      },
       schema {

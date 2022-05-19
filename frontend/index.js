@@ -1,8 +1,8 @@
-let guthabenAlt = 0;
-let guthabenNeu = guthabenAlt;
+let creditOld = 0;
+let creditNew = creditOld;
 let sum = 0;
-let rowIdTeilnehmer = 0;
-let rowIdEinkauf = 1;
+let rowIdParticipants = 0;
+let rowIdPurchase = 1;
 let participants = [];
 let products = [];
 let currentId = 0;
@@ -46,8 +46,8 @@ const getAllParticipants = async () => {
                         _id
                         firstname
                         lastname
-                        guthaben
-                        datumAuszahlung
+                        credit
+                        datePayment
                         signature
                     }
                 }`,
@@ -57,7 +57,7 @@ const getAllParticipants = async () => {
         .then((response) => {
             response.json().then((parsedJson) => {
                 participants = parsedJson.data.getAllParticipants;
-                zeileEinfuegenTeilnehmer();
+                lineInsertParticipant();
             });
         })
         .catch((error) => {
@@ -67,7 +67,7 @@ const getAllParticipants = async () => {
         });
 };
 
-const speichern = async () => {
+const save = async () => {
     await fetch(`${path}/graphql`, {
         method: "POST",
         headers: {
@@ -75,12 +75,12 @@ const speichern = async () => {
             Accept: "application/json",
         },
         body: JSON.stringify({
-            query: `mutation updateGuthaben($id: ID, $guthaben: Float){
-    updateGuthaben(id: $id, guthaben: $guthaben)
+            query: `mutation updateGuthaben($id: ID, $credit: Float){
+    updateGuthaben(id: $id, credit: $credit)
 }`,
             variables: {
                 id: currentId,
-                guthaben: guthabenNeu,
+                credit: creditNew,
             },
         }),
     })
@@ -145,70 +145,70 @@ const getAllProducts = async () => {
 };
 
 const createProducts = async () => {
-    const suessigkeitenContainer = document.getElementById(
-        "suessigkeitenContainer"
+    const sweetsContainer = document.getElementById(
+        "sweetsContainer"
     );
     for (let i = 0; i < products.length; i++) {
         const button = document.createElement("button");
-        button.setAttribute("class", "suessigkeit");
+        button.setAttribute("class", "sweets");
         button.addEventListener("click", function () {
-            inDenEinkaufswagen(
+            intoTheShoppingCart(
                 products[i]._id,
                 products[i].name,
                 products[i].price
             );
         });
         button.innerHTML = `<b>${products[i].name}</b> <br> ${products[i].price} €`;
-        suessigkeitenContainer.insertAdjacentElement("beforeend", button);
+        sweetsContainer.insertAdjacentElement("beforeend", button);
     }
 };
 
-const zeileEinfuegenTeilnehmer = () => {
-    const tabelle = document.getElementById("tabelleTeilnehmer");
-    // schreibe Tabellenzeile
+const lineInsertParticipant = () => {
+    const table = document.getElementById("tableParticipants");
+    // schreibe tablenzeile
     participants.forEach((el) => {
         if (!el.signature) {
-            const reihe = tabelle.insertRow(-1);
-            let vorname = el.firstname,
-                zelle1 = reihe.insertCell();
-            zelle1.innerHTML = vorname;
+            const row = table.insertRow(-1);
+            let firstname = el.firstname,
+                cell1 = row.insertCell();
+            cell1.innerHTML = firstname;
 
-            let nachname = el.lastname,
-                zelle2 = reihe.insertCell();
-            zelle2.innerHTML = nachname;
+            let lastname = el.lastname,
+                cell2 = row.insertCell();
+            cell2.innerHTML = lastname;
 
-            let gehalt = el.guthaben,
-                zelle3 = reihe.insertCell();
-            zelle3.innerHTML = `${gehalt} €`;
+            let credit = el.credit,
+                cell3 = row.insertCell();
+            cell3.innerHTML = `${credit} €`;
 
-            reihe.setAttribute("rowId", rowIdTeilnehmer++);
-            reihe.setAttribute("personId", el._id);
-            reihe.setAttribute("guthaben", el.guthaben);
-            reihe.setAttribute(
+            row.setAttribute("rowId", rowIdParticipants++);
+            row.setAttribute("personId", el._id);
+            row.setAttribute("credit", el.credit);
+            row.setAttribute(
                 "participantName",
                 el.firstname + " " + el.lastname
             );
 
-            reihe.addEventListener("click", function () {
-                if (rowIdEinkauf > 1) {
+            row.addEventListener("click", function () {
+                if (rowIdPurchase > 1) {
                     if (
                         confirm(
                             "Bist du dir sicher? Du hast noch nicht gespeichert!"
                         )
                     ) {
-                        clearEinkauf();
-                        auswahl(
+                        clearShopping();
+                        selection(
                             this.getAttribute("personId"),
-                            this.getAttribute("guthaben"),
+                            this.getAttribute("credit"),
                             this.getAttribute("participantName")
                         );
                         currentId = this.getAttribute("personId");
                     }
                 } else {
-                    clearEinkauf();
-                    auswahl(
+                    clearShopping();
+                    selection(
                         this.getAttribute("personId"),
-                        this.getAttribute("guthaben"),
+                        this.getAttribute("credit"),
                         this.getAttribute("participantName")
                     );
                     currentId = this.getAttribute("personId");
@@ -218,92 +218,92 @@ const zeileEinfuegenTeilnehmer = () => {
     });
 };
 
-function zeileEinfuegenEinkauf(artikelId, artikelName, preis) {
-    const tabelle = document.getElementById("tabelleEinkauf");
-    // schreibe Tabellenzeile
-    const reihe = tabelle.insertRow(-1);
-    let artikel = artikelName,
-        zelle1 = reihe.insertCell();
-    zelle1.innerHTML = artikel;
+function lineInfoPurchase(articleId, articleName, price) {
+    const table = document.getElementById("tablePurchase");
+    // schreibe tablenzeile
+    const row = table.insertRow(-1);
+    let article = articleName,
+        cell1 = row.insertCell();
+    cell1.innerHTML = article;
 
-    let artikelPreis = `${preis} €`,
-        zelle2 = reihe.insertCell();
-    zelle2.innerHTML = artikelPreis;
+    let articlePrice = `${price} €`,
+        cell2 = row.insertCell();
+    cell2.innerHTML = articlePrice;
 
-    reihe.setAttribute("rowId", rowIdEinkauf++);
-    reihe.setAttribute("artikelId", artikelId);
-    reihe.setAttribute("preis", preis);
+    row.setAttribute("rowId", rowIdPurchase++);
+    row.setAttribute("articleId", articleId);
+    row.setAttribute("price", price);
 
-    reihe.addEventListener("click", function () {
+    row.addEventListener("click", function () {
         if (confirm("Artikel wirklich löschen?")) {
-            ausDemEinkaufswagen(
-                parseFloat(this.getAttribute("preis")),
+            outOftheShoppingCart(
+                parseFloat(this.getAttribute("price")),
                 parseInt(this.closest("tr").rowIndex)
             );
         }
     });
 }
 
-const auswahl = (personId, guthaben, name) => {
-    guthabenAlt = guthaben;
-    guthabenNeu = guthabenAlt;
+const selection = (personId, credit, name) => {
+    creditOld = credit;
+    creditNew = creditOld;
     document.getElementById("participantName").innerHTML = name;
     document.getElementById(
-        "guthabenAlt"
-    ).innerHTML = `Alt: <b>${guthabenAlt} € </b>`;
+        "creditOld"
+    ).innerHTML = `Alt: <b>${creditOld} € </b>`;
     document.getElementById(
-        "guthabenNeu"
-    ).innerHTML = `Neu: <b>${guthabenNeu} € </b>`;
+        "creditNew"
+    ).innerHTML = `Neu: <b>${creditNew} € </b>`;
 };
 
-const checkGuthaben = (preis) => {
-    return guthabenNeu - preis >= 0 ? true : false;
+const checkCredit = (price) => {
+    return creditNew - price >= 0 ? true : false;
 };
 const clear = () => {
-    clearEinkauf();
-    const tabelleTeilnehmer = document.getElementById("tabelleTeilnehmer");
-    for (let i = rowIdTeilnehmer; i > 0; i--) {
-        tabelleTeilnehmer.deleteRow(i);
+    clearShopping();
+    const tableParticipants = document.getElementById("tableParticipants");
+    for (let i = rowIdParticipants; i > 0; i--) {
+        tableParticipants.deleteRow(i);
     }
-    rowIdTeilnehmer = 0;
+    rowIdParticipants = 0;
     document.getElementById("participantName").innerHTML = name;
 };
-const clearEinkauf = () => {
-    const tabelleEinkauf = document.getElementById("tabelleEinkauf");
-    for (let i = rowIdEinkauf - 1; i > 0; i--) {
-        tabelleEinkauf.deleteRow(i);
+const clearShopping = () => {
+    const tablePurchase = document.getElementById("tablePurchase");
+    for (let i = rowIdPurchase - 1; i > 0; i--) {
+        tablePurchase.deleteRow(i);
     }
-    guthabenAlt = 0;
-    guthabenNeu = 0;
+    creditOld = 0;
+    creditNew = 0;
     sum = 0;
-    rowIdEinkauf = 1;
+    rowIdPurchase = 1;
     currentId = 0;
     purchases = [];
     document.getElementById(
-        "guthabenAlt"
-    ).innerHTML = `Alt: <b>${guthabenAlt} €</b>`;
+        "creditOld"
+    ).innerHTML = `Alt: <b>${creditOld} €</b>`;
     document.getElementById(
-        "guthabenNeu"
-    ).innerHTML = `Neu: <b>${guthabenNeu} €</b>`;
+        "creditNew"
+    ).innerHTML = `Neu: <b>${creditNew} €</b>`;
     document.getElementById("sum").innerHTML = `Summe: <b>${sum} €</b>`;
 };
 
-const inDenEinkaufswagen = (artikelId, artikelName, preis) => {
-    if (checkGuthaben(preis)) {
-        sum += preis;
+const intoTheShoppingCart = (articleId, articleName, price) => {
+    if (checkCredit(price)) {
+        sum += price;
         sum = parseFloat(sum.toFixed(2));
-        guthabenNeu -= preis;
-        guthabenNeu = parseFloat(guthabenNeu.toFixed(2));
+        creditNew -= price;
+        creditNew = parseFloat(creditNew.toFixed(2));
 
         document.getElementById(
-            "guthabenNeu"
-        ).innerHTML = `Neu: <b>${guthabenNeu} €</b>`;
+            "creditNew"
+        ).innerHTML = `Neu: <b>${creditNew} €</b>`;
         document.getElementById("sum").innerHTML = `Summe: <b>${sum} € </b>`;
 
         if (purchases.length > 0) {
             let foundEntry = false;
             for (let i = 0; i < purchases.length; i++) {
-                if (purchases[i].productID == artikelId) {
+                if (purchases[i].productID == articleId) {
                     purchases[i].count = purchases[i].count + 1;
                     foundEntry = true;
                     break;
@@ -311,7 +311,7 @@ const inDenEinkaufswagen = (artikelId, artikelName, preis) => {
             }
             if (!foundEntry) {
                 purchases.push({
-                    productID: artikelId,
+                    productID: articleId,
                     userID: currentId,
                     count: 1,
                     date: Date.now(),
@@ -319,27 +319,27 @@ const inDenEinkaufswagen = (artikelId, artikelName, preis) => {
             }
         } else {
             purchases.push({
-                productID: artikelId,
+                productID: articleId,
                 userID: currentId,
                 count: 1,
                 date: Date.now(),
             });
         }
-        zeileEinfuegenEinkauf(artikelId, artikelName, preis);
+        lineInfoPurchase(articleId, articleName, price);
     } else {
         alert("Nicht genug Guthaben");
     }
 };
 
-const ausDemEinkaufswagen = (preis, id) => {
+const outOftheShoppingCart = (price, id) => {
     console.log(id);
-    const tabelle = document.getElementById("tabelleEinkauf");
-    tabelle.deleteRow(id);
-    sum -= preis;
+    const table = document.getElementById("tablePurchase");
+    table.deleteRow(id);
+    sum -= price;
     sum = parseFloat(sum.toFixed(2));
-    guthabenNeu += preis;
-    guthabenNeu = parseFloat(guthabenNeu.toFixed(2));
-    rowIdEinkauf--;
+    creditNew += price;
+    creditNew = parseFloat(creditNew.toFixed(2));
+    rowIdPurchase--;
 
     const index = purchases.indexOf(id);
     if (index > -1) {
@@ -347,8 +347,8 @@ const ausDemEinkaufswagen = (preis, id) => {
     }
 
     document.getElementById(
-        "guthabenNeu"
-    ).innerHTML = `Neu: <b>${guthabenNeu} € </b>`;
+        "creditNew"
+    ).innerHTML = `Neu: <b>${creditNew} € </b>`;
     document.getElementById("sum").innerHTML = `Summe: <b>${sum} € </b>`;
 };
 
@@ -371,14 +371,14 @@ function toggleLightDark() {
     let elementsGray = [];
     let elementsText = [];
     elementsGray.push(
-        document.getElementsByClassName("suessigkeitenContainer")[0]
+        document.getElementsByClassName("sweetsContainer")[0]
     );
 
-    elementsGray.push(document.getElementsByClassName("einkauf")[0]);
+    elementsGray.push(document.getElementsByClassName("purchase")[0]);
     elementsWhite.push(
-        document.getElementsByClassName("buchhaltung-container")[0]
+        document.getElementsByClassName("accounting-container")[0]
     );
-    elementsWhite.push(document.getElementsByClassName("teilnehmer")[0]);
+    elementsWhite.push(document.getElementsByClassName("participants")[0]);
     elementsWhite.push(document.getElementsByClassName("settings")[0]);
 
     let buttons = document.getElementsByClassName("button");
@@ -386,21 +386,21 @@ function toggleLightDark() {
         elementsText.push(buttons[i]);
     }
 
-    let suessigkeiten = document.getElementsByClassName("suessigkeit");
-    for (let i = 0; i < suessigkeiten.length; i++) {
-        elementsText.push(suessigkeiten[i]);
+    let sweets = document.getElementsByClassName("sweets");
+    for (let i = 0; i < sweets.length; i++) {
+        elementsText.push(sweets[i]);
     }
-    let buchhaltungsElement = document.getElementsByClassName(
-        "buchhaltungsElement"
+    let accountingElement = document.getElementsByClassName(
+        "accountingElement"
     );
-    for (let i = 0; i < buchhaltungsElement.length; i++) {
-        elementsText.push(buchhaltungsElement[i]);
+    for (let i = 0; i < accountingElement.length; i++) {
+        elementsText.push(accountingElement[i]);
     }
     let tables = document.getElementsByTagName("table");
     for (let i = 0; i < tables.length; i++) {
         elementsText.push(tables[i]);
     }
-    elementsText.push(document.getElementsByClassName("buchhaltung-name")[0]);
+    elementsText.push(document.getElementsByClassName("accounting-name")[0]);
     elementsWhite.forEach((e) => {
         e.classList.toggle("lightModeWhite");
     });

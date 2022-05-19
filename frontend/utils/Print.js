@@ -1,4 +1,4 @@
-let teilnehmer = [];
+let participants = [];
 
 const createPrintableTable = () => {
     let newWin = window.open("");
@@ -19,43 +19,43 @@ const createPrintableTable = () => {
         </table></div></body></html>`);
     const tabelle = newWin.document.getElementById("printTable");
     // schreibe Tabellenzeile
-    teilnehmer.forEach((el) => {
-        const reihe = tabelle.insertRow(-1);
-        reihe.style.border = "1px solid black";
-        let vorname = el.firstname,
-            zelle1 = reihe.insertCell();
-        zelle1.style.border = "1px solid black";
-        zelle1.innerHTML = vorname;
+    participants.forEach((el) => {
+        const row = tabelle.insertRow(-1);
+        row.style.border = "1px solid black";
+        let firstname = el.firstname,
+            cell1 = row.insertCell();
+        cell1.style.border = "1px solid black";
+        cell1.innerHTML = firstname;
 
-        let nachname = el.lastname,
-            zelle2 = reihe.insertCell();
-        zelle2.style.border = "1px solid black";
-        zelle2.innerHTML = nachname;
+        let lastname = el.lastname,
+            cell2 = row.insertCell();
+        cell2.style.border = "1px solid black";
+        cell2.innerHTML = lastname;
 
         if (!el.signature) {
-            let gehalt = el.guthaben,
-                zelle3 = reihe.insertCell();
-            zelle3.style.border = "1px solid black";
-            zelle3.innerHTML = `${gehalt} €`;
+            let credit = el.credit,
+                cell3 = row.insertCell();
+            cell3.style.border = "1px solid black";
+            cell3.innerHTML = `${credit} €`;
         } else {
-            let datumAlt = new Date(el.datumAuszahlung);
-            let datum =
-                ("0" + datumAlt.getDate()).slice(-2) +
+            let dateOld = new Date(el.datePayOut);
+            let date =
+                ("0" + dateOld.getDate()).slice(-2) +
                 "." +
-                ("0" + (datumAlt.getMonth() + 1)).slice(-2) +
+                ("0" + (dateOld.getMonth() + 1)).slice(-2) +
                 "." +
-                datumAlt.getFullYear() +
+                dateOld.getFullYear() +
                 ", " +
-                ("0" + datumAlt.getHours()).slice(-2) +
+                ("0" + dateOld.getHours()).slice(-2) +
                 ":" +
-                ("0" + datumAlt.getMinutes()).slice(-2) +
+                ("0" + dateOld.getMinutes()).slice(-2) +
                 " Uhr";
-            let gehalt = el.guthaben,
-                zelle3 = reihe.insertCell();
-            zelle3.style.border = "1px solid black";
-            zelle3.innerHTML = `${gehalt} € ausgezahlt am ${datum}`;
+            let credit = el.credit,
+                cell3 = row.insertCell();
+            cell3.style.border = "1px solid black";
+            cell3.innerHTML = `${credit} € ausgezahlt am ${date}`;
         }
-        reihe.setAttribute("personId", el._id);
+        row.setAttribute("personId", el._id);
         //Aktion
         let image;
         if (el.signature) {
@@ -66,17 +66,16 @@ const createPrintableTable = () => {
         }
         image.style.width = "14rem";
         image.style.height = "4rem";
-        let zelle4 = reihe.insertCell();
-        zelle4.style.border = "1px solid black";
-        zelle4.appendChild(image);
+        let cell4 = row.insertCell();
+        cell4.style.border = "1px solid black";
+        cell4.appendChild(image);
     });
     setTimeout(function () {
         newWin.print();
     }, 500);
 };
 
-const druckeTeilnehmer = async () => {
-    console.log("Ja");
+const printParticipants = async () => {
     await fetch(`${path}/graphql`, {
         method: "POST",
         headers: {
@@ -88,15 +87,15 @@ const druckeTeilnehmer = async () => {
                         _id
                         firstname
                         lastname
-                        guthaben
-                        datumAuszahlung
+                        credit
+                        datePayOut
                         signature
                     }
                 }`,
         }),
     }).then((response) => {
         response.json().then((parsedJson) => {
-            teilnehmer = parsedJson.data.getAllParticipants;
+            participants = parsedJson.data.getAllParticipants;
             createPrintableTable();
         });
     });

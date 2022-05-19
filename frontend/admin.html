@@ -10,7 +10,7 @@
 <body onload="validateUser()">
     <div class="container" id="container">
     <a href="index.html" class="button" style="width: fit-content">Kiosk</a>
-        <button class="button" style="width: fit-content" onclick="druckeTeilnehmer()">drucken</button>
+        <button class="button" style="width: fit-content" onclick="printParticipants()">drucken</button>
         <div id="form-container" class="form-container">
             <div id="participantForm" class="form">
                 <button class="button button--inline" id="sig-cancellationBtnSignOut" onclick="signOut()">Abmelden</button>
@@ -19,11 +19,11 @@
                 <input class="input" type="text" id="firstname" name="firstname">
                 <label class="label" for="lastname">Nachname</label>
                 <input class="input" type="text" id="lastname" name="lastname">
-                <label class="label" for="guthaben">Guthaben (€)</label>
-                <input class="input" type="text" id="guthaben" name="guthaben">
+                <label class="label" for="credit">Guthaben (€)</label>
+                <input class="input" type="text" id="credit" name="credit">
                 <input class="button" type="button" onclick="newParticipant(event)" value="Registrieren">
             </div>
-                    <table id="tabelleTeilnehmer">
+                    <table id="tableParticipants">
                         <thead>
                             <tr>
                                 <th>Vorname</th>

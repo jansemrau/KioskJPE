@@ -118,19 +118,6 @@
     border: none;
 }
 
-.datum {
-    background-color: #014153;
-    color: #ed6a4e;
-    font-family: Arial, Helvetica, sans-serif;
-    padding-left: 1rem;
-}
-.datum:hover {
-    cursor: pointer;
-}
-.gottesdienst {
-    background-color: #014153;
-    margin-bottom: 1rem;
-}
 .form-container {
     padding-bottom: 1rem;
 }

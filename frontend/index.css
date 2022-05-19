@@ -35,15 +35,15 @@
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 0.5fr 0.1fr;
     grid-template-areas:
-        "suessigkeiten suessigkeiten suessigkeiten teilnehmer"
-        "buchhaltung buchhaltung buchhaltung einkauf"
-        "settings settings settings speichern";
+        "sweets sweets sweets participants"
+        "accounting accounting accounting purchase"
+        "settings settings settings save";
 }
 
-#suessigkeitenContainer {
-    grid-area: suessigkeiten;
+#sweetsContainer {
+    grid-area: sweets;
 }
-.suessigkeitenContainer {
+.sweetsContainer {
     background-color: #002834;
     display: flex;
     justify-content: stretch;
@@ -52,7 +52,7 @@
     height: 100%;
     width: 100%;
 }
-.suessigkeit {
+.sweets {
     background-color: #014153;
     padding: 0.25rem;
     margin: 0.25rem 0.25rem;
@@ -67,10 +67,10 @@
         border: 0.125rem solid white;
     }
 }
-#buchhaltung {
-    grid-area: buchhaltung;
+#accounting {
+    grid-area: accounting;
 }
-.buchhaltung-container {
+.accounting-container {
     background-color: #014153;
     display: flex;
     flex-direction: column;
@@ -78,26 +78,26 @@
     height: 100%;
     width: 100%;
 }
-.buchhaltung {
+.accounting {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
     height: 100%;
     width: 100%;
 }
-#teilnehmer {
-    grid-area: teilnehmer;
+#participants {
+    grid-area: participants;
     overflow: auto;
 }
-.teilnehmer {
+.participants {
     background-color: #014153;
     overflow: auto;
 }
-#einkauf {
-    grid-area: einkauf;
+#purchase {
+    grid-area: purchase;
     overflow: auto;
 }
-.einkauf {
+.purchase {
     background-color: #002834;
     overflow: auto;
     height: 100%;
@@ -134,7 +134,7 @@
     }
 }
 
-.buchhaltungsElement {
+.accountingElement {
     display: inline-block;
     width: auto;
     font-family: Arial, Helvetica, sans-serif;
@@ -144,7 +144,7 @@
     flex-grow: 1;
     flex-basis: 0;
 }
-.buchhaltung-name {
+.accounting-name {
     min-height: 4rem;
     padding: 1rem 0;
     display: block;

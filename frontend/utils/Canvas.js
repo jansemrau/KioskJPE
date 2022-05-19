@@ -172,7 +172,7 @@ const signature = (currentId) => {
         "click",
         function (e) {
             var dataUrl = canvas.toDataURL();
-            auszahlen(currentId, dataUrl);
+            payOut(currentId, dataUrl);
         },
         false
     );

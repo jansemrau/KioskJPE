@@ -1,10 +1,7 @@
 let productsTable = [];
 let rowIdProducts = 0;
-let guthabenAlt = 0;
-let guthabenNeu = guthabenAlt;
 let sum = 0;
-let rowIdTeilnehmer = 0;
-let rowIdEinkauf = 0;
+let rowIdParticipants = 0;
 let participants = [];
 let products = [];
 
@@ -36,14 +33,14 @@ const validateUser = async () => {
 const newParticipant = async () => {
     const firstname = document.getElementById("firstname").value;
     const lastname = document.getElementById("lastname").value;
-    let guthaben = document.getElementById("guthaben").value;
-    let isValid = /^[0-9,.]*$/.test(guthaben);
+    let credit = document.getElementById("credit").value;
+    let isValid = /^[0-9,.]*$/.test(credit);
     if (!isNaN(isValid)) {
-        if (guthaben.indexOf(",") > -1) {
-            guthaben = guthaben.replace(",", ".");
-            guthaben = parseFloat(guthaben);
+        if (credit.indexOf(",") > -1) {
+            credit = credit.replace(",", ".");
+            credit = parseFloat(credit);
         } else {
-            guthaben = parseFloat(guthaben);
+            credit = parseFloat(credit);
         }
         await fetch(`${path}/graphql`, {
             method: "POST",
@@ -52,13 +49,13 @@ const newParticipant = async () => {
                 Accept: "application/json",
             },
             body: JSON.stringify({
-                query: `mutation createParticipant($firstname: String, $lastname: String, $guthaben: Float){
-    createParticipant(firstname: $firstname, lastname: $lastname guthaben: $guthaben)
+                query: `mutation createParticipant($firstname: String, $lastname: String, $credit: Float){
+    createParticipant(firstname: $firstname, lastname: $lastname credit: $credit)
 }`,
                 variables: {
                     firstname: firstname,
                     lastname: lastname,
-                    guthaben: guthaben,
+                    credit: credit,
                 },
             }),
         }).then((response) => {
@@ -93,8 +90,8 @@ const deleteParticipant = async (id) => {
     });
 };
 
-const auszahlen = async (currentId, dataUrl) => {
-    let datum = Date.now();
+const payOut = async (currentId, dataUrl) => {
+    let date = Date.now();
     await fetch(`${path}/graphql`, {
         method: "POST",
         headers: {
@@ -102,13 +99,13 @@ const auszahlen = async (currentId, dataUrl) => {
             Accept: "application/json",
         },
         body: JSON.stringify({
-            query: `mutation updateSignature($id: ID, $signature: String, $datumAuszahlung: Float){
-    updateSignature(id: $id, signature: $signature, datumAuszahlung: $datumAuszahlung)
+            query: `mutation updateSignature($id: ID, $signature: String, $datePayment: Float){
+    updateSignature(id: $id, signature: $signature, datePayment: $datePayment)
 }`,
             variables: {
                 id: currentId,
                 signature: dataUrl,
-                datumAuszahlung: datum,
+                datePayment: date,
             },
         }),
     }).then((response) => {
@@ -130,8 +127,8 @@ const getAllParticipants = async () => {
                         _id
                         firstname
                         lastname
-                        guthaben
-                        datumAuszahlung
+                        credit
+                        datePayment
                         signature
                     }
                 }`,
@@ -141,7 +138,7 @@ const getAllParticipants = async () => {
         .then((response) => {
             response.json().then((parsedJson) => {
                 participants = parsedJson.data.getAllParticipants;
-                zeileEinfuegenTeilnehmer();
+                lineInsertParticipant();
             });
         })
         .catch((error) => {
@@ -151,41 +148,41 @@ const getAllParticipants = async () => {
         });
 };
 
-const zeileEinfuegenTeilnehmer = () => {
-    const tabelle = document.getElementById("tabelleTeilnehmer");
+const lineInsertParticipant = () => {
+    const table = document.getElementById("tableParticipants");
     // schreibe Tabellenzeile
     participants.forEach((el) => {
-        const reihe = tabelle.insertRow(-1);
-        let vorname = el.firstname,
-            zelle1 = reihe.insertCell();
-        zelle1.innerHTML = vorname;
+        const row = table.insertRow(-1);
+        let firstname = el.firstname,
+            cell1 = row.insertCell();
+        cell1.innerHTML = firstname;
 
-        let nachname = el.lastname,
-            zelle2 = reihe.insertCell();
-        zelle2.innerHTML = nachname;
+        let lastname = el.lastname,
+            cell2 = row.insertCell();
+        cell2.innerHTML = lastname;
 
         if (!el.signature) {
-            let gehalt = el.guthaben,
-                zelle3 = reihe.insertCell();
-            zelle3.innerHTML = `${gehalt} €`;
+            let credit = el.credit,
+                cell3 = row.insertCell();
+            cell3.innerHTML = `${credit} €`;
         } else {
-            let datumAlt = new Date(el.datumAuszahlung);
-            let datum =
-                ("0" + datumAlt.getDate()).slice(-2) +
+            let dateOld = new Date(el.datePayment);
+            let date =
+                ("0" + dateOld.getDate()).slice(-2) +
                 "." +
-                ("0" + (datumAlt.getMonth() + 1)).slice(-2) +
+                ("0" + (dateOld.getMonth() + 1)).slice(-2) +
                 "." +
-                datumAlt.getFullYear() +
+                dateOld.getFullYear() +
                 ", " +
-                ("0" + datumAlt.getHours()).slice(-2) +
+                ("0" + dateOld.getHours()).slice(-2) +
                 ":" +
-                ("0" + datumAlt.getMinutes()).slice(-2) +
+                ("0" + dateOld.getMinutes()).slice(-2) +
                 " Uhr";
-            let gehalt = el.guthaben,
-                zelle3 = reihe.insertCell();
-            zelle3.innerHTML = `${gehalt} € ausgezahlt am ${datum}`;
+            let credit = el.credit,
+                cell3 = row.insertCell();
+            cell3.innerHTML = `${credit} € ausgezahlt am ${date}`;
         }
-        reihe.setAttribute("personId", el._id);
+        row.setAttribute("personId", el._id);
         //Aktion
         let deleteButton = document.createElement("button");
         deleteButton.setAttribute("class", "button button--fullwidth");
@@ -194,14 +191,14 @@ const zeileEinfuegenTeilnehmer = () => {
             deleteParticipant(el._id);
         });
 
-        let auszahlenButton = document.createElement("button");
+        let payOutButton = document.createElement("button");
         if (el.signature) {
-            auszahlenButton.setAttribute(
+            payOutButton.setAttribute(
                 "class",
                 "button button--ausgezahlt button--fullwidth"
             );
-            auszahlenButton.innerHTML = "Ausgezahlt";
-            auszahlenButton.addEventListener("click", function () {
+            payOutButton.innerHTML = "Ausgezahlt";
+            payOutButton.addEventListener("click", function () {
                 modal.className = "Modal is-visuallyHidden";
                 setTimeout(function () {
                     container.className = "container is-blurred";
@@ -238,9 +235,9 @@ const zeileEinfuegenTeilnehmer = () => {
                 };
             });
         } else {
-            auszahlenButton.setAttribute("class", "button button--fullwidth");
-            auszahlenButton.innerHTML = "Auszahlen";
-            auszahlenButton.addEventListener("click", function () {
+            payOutButton.setAttribute("class", "button button--fullwidth");
+            payOutButton.innerHTML = "Auszahlen";
+            payOutButton.addEventListener("click", function () {
                 if (
                     confirm(
                         "Bist du dir sicher, dass du den Betrag auszahlen möchtest?"
@@ -261,18 +258,18 @@ const zeileEinfuegenTeilnehmer = () => {
         purchasesButton.setAttribute("class", "button button--fullwidth");
         purchasesButton.innerHTML = "Einkäufe";
         purchasesButton.addEventListener("click", function () {
-            druckePurchases(el._id);
+            printPurchases(el._id);
         });
 
-        let zelle4 = reihe.insertCell();
-        zelle4.appendChild(deleteButton);
-        zelle4.appendChild(auszahlenButton);
-        zelle4.appendChild(purchasesButton);
+        let cell4 = row.insertCell();
+        cell4.appendChild(deleteButton);
+        cell4.appendChild(payOutButton);
+        cell4.appendChild(purchasesButton);
 
-        reihe.setAttribute("rowId", rowIdTeilnehmer++);
-        reihe.setAttribute("personId", el._id);
-        reihe.setAttribute("guthaben", el.guthaben);
-        reihe.setAttribute("participantName", el.firstname + " " + el.lastname);
+        row.setAttribute("rowId", rowIdParticipants++);
+        row.setAttribute("personId", el._id);
+        row.setAttribute("credit", el.credit);
+        row.setAttribute("participantName", el.firstname + " " + el.lastname);
     });
 };
 
@@ -307,17 +304,17 @@ const getAllProductsTable = async () => {
 };
 
 function createProductsTable() {
-    const tabelle = document.getElementById("tabelleProdukte");
+    const table = document.getElementById("tabelleProdukte");
     // schreibe Tabellenzeile
     productsTable.forEach((el) => {
-        const reihe = tabelle.insertRow(-1);
+        const row = table.insertRow(-1);
         let name = el.name,
-            zelle1 = reihe.insertCell();
-        zelle1.innerHTML = name;
+            cell1 = row.insertCell();
+        cell1.innerHTML = name;
 
         let price = el.price,
-            zelle2 = reihe.insertCell();
-        zelle2.innerHTML = `${price} €`;
+            cell2 = row.insertCell();
+        cell2.innerHTML = `${price} €`;
 
         let deleteButton = document.createElement("button");
         deleteButton.setAttribute("class", "button button--fullwidth");
@@ -332,11 +329,11 @@ function createProductsTable() {
             }
         });
 
-        let zelle3 = reihe.insertCell();
-        zelle3.appendChild(deleteButton);
+        let cell3 = row.insertCell();
+        cell3.appendChild(deleteButton);
 
-        reihe.setAttribute("rowId", rowIdProducts++);
-        reihe.setAttribute("ProductId", el._id);
+        row.setAttribute("rowId", rowIdProducts++);
+        row.setAttribute("ProductId", el._id);
     });
 }
 
@@ -376,25 +373,6 @@ const newProduct = async (event) => {
         alert("Keinen gültigen Preis eingegeben, bitte neu eingeben");
         location.reload();
     }
-    // TODO What is this code doing??
-    // await fetch(`${path}/kiosk/newProduct`, {
-    //     method: "POST",
-    //     headers: {
-    //         "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //         signature: dataUrl,
-    //         datumAuszahlung: datum,
-    //     }),
-    // }).then((response) => {
-    //     response.json().then((parsedJson) => {
-    //         if (parsedJson.status !== "success") {
-    //             errorElement(parsedJson.message);
-    //         } else {
-    //             location.reload();
-    //         }
-    //     });
-    // });
 };
 
 const deleteProduct = async (id) => {

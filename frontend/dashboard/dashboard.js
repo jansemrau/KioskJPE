@@ -17,53 +17,53 @@ const createPurchasePrintableTable = () => {
         <tbody id="printTableBodyPurchases">
         </tbody>
     </table></div></body></html>`);
-    const tabelle = newWin.document.getElementById("printTablePurchases");
+    const table = newWin.document.getElementById("printTablePurchases");
     purchases.forEach((el) => {
-        const reihe = tabelle.insertRow(-1);
-        reihe.style.border = "1px solid black";
-        let vorname = el.firstname,
-            zelle1 = reihe.insertCell();
-        zelle1.style.border = "1px solid black";
-        zelle1.innerHTML = vorname;
+        const row = table.insertRow(-1);
+        row.style.border = "1px solid black";
+        let firstname = el.firstname,
+            cell1 = row.insertCell();
+        cell1.style.border = "1px solid black";
+        cell1.innerHTML = firstname;
 
-        let nachname = el.lastname,
-            zelle2 = reihe.insertCell();
-        zelle2.style.border = "1px solid black";
-        zelle2.innerHTML = nachname;
+        let lastname = el.lastname,
+            cell2 = row.insertCell();
+        cell2.style.border = "1px solid black";
+        cell2.innerHTML = lastname;
 
-        let anzahl = el.count,
-            zelle3 = reihe.insertCell();
-        zelle3.style.border = "1px solid black";
-        zelle3.innerHTML = `${anzahl}x`;
+        let count = el.count,
+            cell3 = row.insertCell();
+        cell3.style.border = "1px solid black";
+        cell3.innerHTML = `${count}x`;
 
         let productName = el.productname,
-            zelle4 = reihe.insertCell();
-        zelle4.style.border = "1px solid black";
-        zelle4.innerHTML = `${productName}`;
+            cell4 = row.insertCell();
+        cell4.style.border = "1px solid black";
+        cell4.innerHTML = `${productName}`;
 
-        let datumAlt = new Date(el.date);
-        let datum =
-            ("0" + datumAlt.getDate()).slice(-2) +
+        let dateOld = new Date(el.date);
+        let date =
+            ("0" + dateOld.getDate()).slice(-2) +
             "." +
-            ("0" + (datumAlt.getMonth() + 1)).slice(-2) +
+            ("0" + (dateOld.getMonth() + 1)).slice(-2) +
             "." +
-            datumAlt.getFullYear() +
+            dateOld.getFullYear() +
             ", " +
-            ("0" + datumAlt.getHours()).slice(-2) +
+            ("0" + dateOld.getHours()).slice(-2) +
             ":" +
-            ("0" + datumAlt.getMinutes()).slice(-2) +
+            ("0" + dateOld.getMinutes()).slice(-2) +
             " Uhr";
-        let gehalt = el.guthaben,
-            zelle5 = reihe.insertCell();
-        zelle5.style.border = "1px solid black";
-        zelle5.innerHTML = `Gekauft am ${datum}`;
+        //TODO: What is Gehalt doing
+        let credit = el.credit,
+            cell5 = row.insertCell();
+        cell5.style.border = "1px solid black";
+        cell5.innerHTML = `Gekauft am ${date}`;
 
-        reihe.setAttribute("personId", el._id);
+        row.setAttribute("personId", el._id);
     });
 };
 
-const druckePurchases = async (userId) => {
-    console.log("Ja");
+const printPurchases = async (userId) => {
     await fetch(`${path}/graphql`, {
         method: "POST",
         headers: {

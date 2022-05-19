@@ -34,8 +34,8 @@ const resolverFunctions = {
                     _id: participant._id,
                     firstname: participant.firstname,
                     lastname: participant.lastname,
-                    guthaben: participant.guthaben,
-                    datumAuszahlung: participant.datumAuszahlung,
+                    credit: participant.credit,
+                    datePayment: participant.datePayment,
                     signature: participant.signature,
                 };
             });
@@ -59,12 +59,12 @@ const resolverFunctions = {
 
     createParticipant: async (args) => {
         try {
-            const { firstname, lastname, guthaben } = args;
+            const { firstname, lastname, credit } = args;
             const db = await loadDB();
             let newParticipant = await db.collection("Participants").insertOne({
                 firstname: firstname,
                 lastname: lastname,
-                guthaben: guthaben,
+                credit: credit,
             });
             return "Participant created";
         } catch (error) {
@@ -94,14 +94,14 @@ const resolverFunctions = {
     updateGuthaben: async (args) => {
         try {
             const id = args.id;
-            const guthabenNeu = args.guthaben;
+            const creditNew = args.credit;
             const db = await loadDB();
             const result = await db.collection("Participants").update(
                 {
                     _id: ObjectId(id),
                 },
                 {
-                    $set: { guthaben: guthabenNeu },
+                    $set: { credit: creditNew },
                 }
             );
             return "Guthaben geupdated";
@@ -113,7 +113,7 @@ const resolverFunctions = {
         try {
             const id = args.id;
             const signature = args.signature;
-            const datumAuszahlung = args.datumAuszahlung;
+            const datePayment = args.datePayment;
             const db = await loadDB();
             const result = await db.collection("Participants").update(
                 {
@@ -122,7 +122,7 @@ const resolverFunctions = {
                 {
                     $set: {
                         signature: signature,
-                        datumAuszahlung: datumAuszahlung,
+                        datePayment: datePayment,
                     },
                 }
             );
