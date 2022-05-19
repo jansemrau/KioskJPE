@@ -5,7 +5,7 @@ let rowIdParticipants = 0;
 let participants = [];
 let products = [];
 
-let path = "https://89.22.122.138";
+let path = "https://www.jan-semrau.de";
 
 function handleErrors(response) {
     if (!response.ok) {

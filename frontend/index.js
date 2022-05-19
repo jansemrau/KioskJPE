@@ -8,7 +8,7 @@ let products = [];
 let currentId = 0;
 let purchases = [];
 
-let path = "https://89.22.122.138";
+let path = "https://www.jan-semrau.de";
 
 const validateUser = async () => {
     await fetch(`${path}/auth/welcome`, {
