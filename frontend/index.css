@@ -30,7 +30,7 @@
 .container {
     width: 100vw;
     height: 100vh;
-    min-height: -webkit-fill-available;
+    max-height: -webkit-fill-available;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 0.5fr 0.1fr;
