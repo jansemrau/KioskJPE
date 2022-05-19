@@ -1,5 +1,8 @@
 const createPrintableTable = () => {
-    let newWin = window.open("");
+    var id = (new Date()).getTime();  
+	let newWin = window.open(window.location.href + '?printerFriendly=true', id, 
+`toolbar=1,scrollbars=1,location=0,statusbar=0,menubar=1,resizable=1,width=800,
+height=600,left = 240,top = 212`);
     newWin.document.write(`<html><body><div id='table'><table
             style="border: 1px solid black; font-family: Arial, Helvetica, sans-serif; font-size: 1rem; border-collapse:collapse;"
             id="printTable"
