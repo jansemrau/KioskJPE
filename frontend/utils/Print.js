@@ -1,5 +1,3 @@
-let participants = [];
-
 const createPrintableTable = () => {
     let newWin = window.open("");
     newWin.document.write(`<html><body><div id='table'><table
