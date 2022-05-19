@@ -200,10 +200,9 @@ const lineInsertParticipant = () => {
             payOutButton.innerHTML = "Ausgezahlt";
             payOutButton.addEventListener("click", function () {
                 modal.className = "Modal is-visuallyHidden";
-                setTimeout(function () {
-                    container.className = "container is-blurred";
-                    modal.className = "Modal";
-                }, 100);
+                container.className = "container is-blurred";
+                modal.className = "Modal";
+
                 container.parentElement.className = "ModalOpen";
                 var image = new Image();
                 image.src = el.signature;
@@ -244,10 +243,8 @@ const lineInsertParticipant = () => {
                     )
                 ) {
                     modal.className = "Modal is-visuallyHidden";
-                    setTimeout(function () {
-                        container.className = "container is-blurred";
-                        modal.className = "Modal";
-                    }, 100);
+                    container.className = "container is-blurred";
+                    modal.className = "Modal";
                     container.parentElement.className = "ModalOpen";
                     signature(el._id);
                 }

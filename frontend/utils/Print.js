@@ -68,9 +68,7 @@ const createPrintableTable = () => {
         cell4.style.border = "1px solid black";
         cell4.appendChild(image);
     });
-    setTimeout(function () {
-        newWin.print();
-    }, 500);
+    newWin.print();
 };
 
 const printParticipants = async () => {

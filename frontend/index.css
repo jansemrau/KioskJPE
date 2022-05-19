@@ -30,7 +30,7 @@
 .container {
     width: 100vw;
     height: 100vh;
-    /*height: var(--app-height);*/
+    height: var(--app-height);
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 0.5fr 0.1fr;
@@ -60,7 +60,7 @@
     font-family: Arial, Helvetica, sans-serif;
     font-size: calc(6vw / 4);
     color: white;
-    flex: 0 1 24%;
+    flex: 1 1 24%;
 }
 @media (hover: hover) and (pointer: fine) {
     .suessigkeit:hover {
