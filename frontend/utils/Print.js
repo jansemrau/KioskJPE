@@ -38,7 +38,7 @@ const createPrintableTable = () => {
             cell3.style.border = "1px solid black";
             cell3.innerHTML = `${credit} €`;
         } else {
-            let dateOld = new Date(el.datePayOut);
+            let dateOld = new Date(el.datePayment);
             let date =
                 ("0" + dateOld.getDate()).slice(-2) +
                 "." +
@@ -88,7 +88,7 @@ const printParticipants = async () => {
                         firstname
                         lastname
                         credit
-                        datePayOut
+                        datePayment
                         signature
                     }
                 }`,
