@@ -1,7 +1,6 @@
 let purchases = [];
 
-const createPurchasePrintableTable = () => {
-    let newWin = window.open("");
+const createPurchasePrintableTable = (newWin) => {
     newWin.document.write(`<html><body><div id='table'> <table
         style="border: 1px solid black; font-family: Arial, Helvetica, sans-serif; font-size: 1rem; border-collapse:collapse;"
         id="printTablePurchases" class="printTablePurchases">
@@ -64,6 +63,7 @@ const createPurchasePrintableTable = () => {
 };
 
 const printPurchases = async (userId) => {
+    let newWin = window.open("");
     await fetch(`${path}/graphql`, {
         method: "POST",
         headers: {
@@ -82,7 +82,7 @@ const printPurchases = async (userId) => {
     }).then((response) => {
         response.json().then((parsedJson) => {
             purchases = parsedJson.data.getAllPurchases;
-            createPurchasePrintableTable();
+            createPurchasePrintableTable(newWin);
             purchases = [];
         });
     });
