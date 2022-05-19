@@ -5,7 +5,7 @@ let rowIdParticipants = 0;
 let participants = [];
 let products = [];
 
-let path = "http://89.22.122.138";
+let path = "https://89.22.122.138";
 
 function handleErrors(response) {
     if (!response.ok) {
