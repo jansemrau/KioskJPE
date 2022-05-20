@@ -188,7 +188,10 @@ const lineInsertParticipant = () => {
         deleteButton.setAttribute("class", "button button--fullwidth");
         deleteButton.innerHTML = "Löschen";
         deleteButton.addEventListener("click", function () {
-            deleteParticipant(el._id);
+            let result = confirm(
+                `Bist du dir sicher, dass du ${el.firstname} ${el.lastname} unwiderruflich löschen möchtest?`
+            );
+            result && deleteParticipant(el._id);
         });
 
         let payOutButton = document.createElement("button");
