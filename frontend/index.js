@@ -339,9 +339,13 @@ const outOftheShoppingCart = (price, id) => {
     creditNew = parseFloat(creditNew.toFixed(2));
     rowIdPurchase--;
 
-    const index = purchases.indexOf(id);
-    if (index > -1) {
-        purchases.splice(index, 1);
+    const purchaseIndex = purchases.find((e) => e.productID == id);
+    if (purchaseIndex > -1) {
+        if (purchases[purchaseIndex].count > 1) {
+            purchases[purchaseIndex].count--;
+        } else {
+            purchases.splice(indpurchaseIndexex, 1);
+        }
     }
 
     document.getElementById(
