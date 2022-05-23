@@ -236,7 +236,8 @@ function lineInfoPurchase(articleId, articleName, price) {
         if (confirm("Artikel wirklich löschen?")) {
             outOftheShoppingCart(
                 parseFloat(this.getAttribute("price")),
-                parseInt(this.closest("tr").rowIndex)
+                parseInt(this.closest("tr").rowIndex),
+                articleId
             );
         }
     });
@@ -329,7 +330,7 @@ const intoTheShoppingCart = (articleId, articleName, price) => {
     }
 };
 
-const outOftheShoppingCart = (price, id) => {
+const outOftheShoppingCart = (price, id, articleID) => {
     console.log(id);
     const table = document.getElementById("tablePurchase");
     table.deleteRow(id);
@@ -339,7 +340,7 @@ const outOftheShoppingCart = (price, id) => {
     creditNew = parseFloat(creditNew.toFixed(2));
     rowIdPurchase--;
 
-    const purchaseIndex = purchases.find((e) => e.productID == id);
+    const purchaseIndex = purchases.find((e) => e.productID == articleID);
     if (purchaseIndex > -1) {
         if (purchases[purchaseIndex].count > 1) {
             purchases[purchaseIndex].count--;
