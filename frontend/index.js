@@ -345,7 +345,7 @@ const outOftheShoppingCart = (price, id, articleID) => {
         if (purchases[purchaseIndex].count > 1) {
             purchases[purchaseIndex].count--;
         } else {
-            purchases.splice(indpurchaseIndexex, 1);
+            purchases.splice(purchaseIndex, 1);
         }
     }
 
