@@ -340,7 +340,7 @@ const outOftheShoppingCart = (price, id, articleID) => {
     creditNew = parseFloat(creditNew.toFixed(2));
     rowIdPurchase--;
 
-    const purchaseIndex = purchases.find((e) => e.productID == articleID);
+    const purchaseIndex = purchases.indexOf((e) => e.productID == articleID);
     if (purchaseIndex > -1) {
         if (purchases[purchaseIndex].count > 1) {
             purchases[purchaseIndex].count--;
