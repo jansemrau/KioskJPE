@@ -351,6 +351,7 @@ const outOftheShoppingCart = (price, id, articleID) => {
                 table.rows[i].cells[1].innerHTML =
                     parseInt(table.rows[i].cells[1].innerHTML) - 1;
             } else {
+                rowIdPurchase--;
                 table.deleteRow(id);
             }
             break;
@@ -361,7 +362,6 @@ const outOftheShoppingCart = (price, id, articleID) => {
     sum = parseFloat(sum.toFixed(2));
     creditNew += price;
     creditNew = parseFloat(creditNew.toFixed(2));
-    rowIdPurchase--;
 
     const purchaseIndex = purchases.findIndex((e) => e.productID == articleID);
     if (purchaseIndex > -1) {
