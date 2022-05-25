@@ -217,30 +217,43 @@ const lineInsertParticipant = () => {
 };
 
 function lineInfoPurchase(articleId, articleName, price) {
+    let foundEntry = false;
     const table = document.getElementById("tablePurchase");
-    // schreibe tablenzeile
-    const row = table.insertRow(-1);
-    let article = articleName,
-        cell1 = row.insertCell();
-    cell1.innerHTML = article;
 
-    let articlePrice = `${price} €`,
-        cell2 = row.insertCell();
-    cell2.innerHTML = articlePrice;
+    for (let i = 0; i < table.rows.length; i++) {
+        if (table.rows[i].getAttribute("articleid") == articleId) {
+            table.rows[i].cells[1].innerHTML =
+                parseInt(table.rows[i].cells[1].innerHTML) + 1;
+            foundEntry = true;
+            break;
+        }
+    }
+    if (!foundEntry) {
+        const row = table.insertRow(-1);
+        let article = articleName,
+            cell1 = row.insertCell();
+        cell1.innerHTML = article;
 
-    row.setAttribute("rowId", rowIdPurchase++);
-    row.setAttribute("articleId", articleId);
-    row.setAttribute("price", price);
+        let count = 1,
+            cell2 = row.insertCell();
+        cell2.innerHTML = count;
 
-    row.addEventListener("click", function () {
-        if (confirm("Artikel wirklich löschen?")) {
+        let articlePrice = `${price} €`,
+            cell3 = row.insertCell();
+        cell3.innerHTML = articlePrice;
+
+        row.setAttribute("rowId", rowIdPurchase++);
+        row.setAttribute("articleId", articleId);
+        row.setAttribute("price", price);
+
+        row.addEventListener("click", function () {
             outOftheShoppingCart(
                 parseFloat(this.getAttribute("price")),
                 parseInt(this.closest("tr").rowIndex),
                 articleId
             );
-        }
-    });
+        });
+    }
 }
 
 const selection = (personId, credit, name) => {
@@ -331,9 +344,19 @@ const intoTheShoppingCart = (articleId, articleName, price) => {
 };
 
 const outOftheShoppingCart = (price, id, articleID) => {
-    console.log(id);
     const table = document.getElementById("tablePurchase");
-    table.deleteRow(id);
+    for (let i = 0; i < table.rows.length; i++) {
+        if (table.rows[i].getAttribute("articleid") == articleID) {
+            if (parseInt(table.rows[i].cells[1].innerHTML) > 0) {
+                table.rows[i].cells[1].innerHTML =
+                    parseInt(table.rows[i].cells[1].innerHTML) - 1;
+            } else {
+                table.deleteRow(id);
+            }
+            break;
+        }
+    }
+
     sum -= price;
     sum = parseFloat(sum.toFixed(2));
     creditNew += price;
