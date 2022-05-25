@@ -347,7 +347,7 @@ const outOftheShoppingCart = (price, id, articleID) => {
     const table = document.getElementById("tablePurchase");
     for (let i = 0; i < table.rows.length; i++) {
         if (table.rows[i].getAttribute("articleid") == articleID) {
-            if (parseInt(table.rows[i].cells[1].innerHTML) > 0) {
+            if (parseInt(table.rows[i].cells[1].innerHTML) > 1) {
                 table.rows[i].cells[1].innerHTML =
                     parseInt(table.rows[i].cells[1].innerHTML) - 1;
             } else {
