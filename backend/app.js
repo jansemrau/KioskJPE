@@ -33,7 +33,7 @@ const limiter = rateLimit({
 });
 app.use("/api", limiter);
 
-app.use(function (req, res, next) {
+app.use(function (req, res) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "*");
     res.header(
@@ -43,7 +43,6 @@ app.use(function (req, res, next) {
     if (req.method === "OPTIONS") {
         return res.status(200).end();
     }
-    next();
 });
 
 // Body parser, reading data from body into req.body
