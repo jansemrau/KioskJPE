@@ -93,55 +93,55 @@ const save = async () => {
             console.log(error);
             errorElement(error);
         });
-    if (connection) {
-        await fetch(`${path}/graphql`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-            },
-            body: JSON.stringify({
-                query: `mutation updateCredit($id: ID, $credit: Float){
+    //if (connection) {
+    await fetch(`${path}/graphql`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+        },
+        body: JSON.stringify({
+            query: `mutation updateCredit($id: ID, $credit: Float){
     updateCredit(id: $id, credit: $credit)
 }`,
-                variables: {
-                    id: currentId,
-                    credit: creditNew,
-                },
-            }),
-        })
-            .then(handleErrors)
-            .catch((error) => {
-                //Here is still promise
-                console.log(error);
-                errorElement(error);
-            });
-        await fetch(`${path}/graphql`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
+            variables: {
+                id: currentId,
+                credit: creditNew,
             },
-            body: JSON.stringify({
-                query: `mutation insertPurchases($entries: [InputPurchase]){
+        }),
+    })
+        .then(handleErrors)
+        .catch((error) => {
+            //Here is still promise
+            console.log(error);
+            errorElement(error);
+        });
+    await fetch(`${path}/graphql`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+        },
+        body: JSON.stringify({
+            query: `mutation insertPurchases($entries: [InputPurchase]){
     insertPurchases(entries: $entries)
 }`,
-                variables: {
-                    entries: purchases,
-                },
-            }),
+            variables: {
+                entries: purchases,
+            },
+        }),
+    })
+        .then(handleErrors)
+        .then(() => {
+            clear();
+            getAllParticipants();
         })
-            .then(handleErrors)
-            .then(() => {
-                clear();
-                getAllParticipants();
-            })
-            .catch((error) => {
-                //Here is still promise
-                console.log(error);
-                errorElement(error);
-            });
-    }
+        .catch((error) => {
+            //Here is still promise
+            console.log(error);
+            errorElement(error);
+        });
+    // }
 };
 
 const getAllProducts = async () => {
