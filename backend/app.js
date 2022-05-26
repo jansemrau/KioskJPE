@@ -62,7 +62,7 @@ app.use(xss());
 app.use(express.static(`${__dirname}/public`));
 
 // Test middleware
-app.use((req, res, next) => {
+app.use((req, next) => {
     req.requestTime = new Date().toISOString();
     next();
 });
@@ -78,7 +78,7 @@ app.use(
 // 3) ROUTES
 app.use("/auth", authRouter);
 
-app.all("*", (req, res, next) => {
+app.all("*", (req, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 

@@ -68,49 +68,80 @@ const getAllParticipants = async () => {
 };
 
 const save = async () => {
-    await fetch(`${path}/graphql`, {
+    let connection;
+    fetch(`${path}/graphql`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
         },
         body: JSON.stringify({
-            query: `mutation updateCredit($id: ID, $credit: Float){
-    updateCredit(id: $id, credit: $credit)
-}`,
-            variables: {
-                id: currentId,
-                credit: creditNew,
-            },
+            query: `{ checkConnection }`,
         }),
     })
         .then(handleErrors)
-
+        .then((response) => {
+            response.json().then((parsedJson) => {
+                connection = parsedJson.data.checkConnection;
+                if (connection == "success") {
+                    connection = true;
+                }
+            });
+        })
         .catch((error) => {
             //Here is still promise
             console.log(error);
             errorElement(error);
         });
-    await fetch(`${path}/graphql`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-        },
-        body: JSON.stringify({
-            query: `mutation insertPurchases($entries: [InputPurchase]){
+    if (connection) {
+        await fetch(`${path}/graphql`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+            body: JSON.stringify({
+                query: `mutation updateCredit($id: ID, $credit: Float){
+    updateCredit(id: $id, credit: $credit)
+}`,
+                variables: {
+                    id: currentId,
+                    credit: creditNew,
+                },
+            }),
+        })
+            .then(handleErrors)
+            .catch((error) => {
+                //Here is still promise
+                console.log(error);
+                errorElement(error);
+            });
+        await fetch(`${path}/graphql`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+            body: JSON.stringify({
+                query: `mutation insertPurchases($entries: [InputPurchase]){
     insertPurchases(entries: $entries)
 }`,
-            variables: {
-                entries: purchases,
-            },
-        }),
-    }).then((response) => {
-        response.json().then((parsedJson) => {
-            clear();
-            getAllParticipants();
-        });
-    });
+                variables: {
+                    entries: purchases,
+                },
+            }),
+        })
+            .then(handleErrors)
+            .then(() => {
+                clear();
+                getAllParticipants();
+            })
+            .catch((error) => {
+                //Here is still promise
+                console.log(error);
+                errorElement(error);
+            });
+    }
 };
 
 const getAllProducts = async () => {
@@ -196,7 +227,6 @@ const lineInsertParticipant = () => {
                     ) {
                         clearShopping();
                         selection(
-                            this.getAttribute("personId"),
                             this.getAttribute("credit"),
                             this.getAttribute("participantName")
                         );
@@ -205,7 +235,6 @@ const lineInsertParticipant = () => {
                 } else {
                     clearShopping();
                     selection(
-                        this.getAttribute("personId"),
                         this.getAttribute("credit"),
                         this.getAttribute("participantName")
                     );
@@ -256,7 +285,7 @@ function lineInfoPurchase(articleId, articleName, price) {
     }
 }
 
-const selection = (personId, credit, name) => {
+const selection = (credit, name) => {
     creditOld = credit;
     creditNew = creditOld;
     document.getElementById("participantName").innerHTML = name;

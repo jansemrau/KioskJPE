@@ -52,9 +52,8 @@ const createPurchasePrintableTable = (newWin) => {
             ":" +
             ("0" + dateOld.getMinutes()).slice(-2) +
             " Uhr";
-        //TODO: What is Gehalt doing
-        let credit = el.credit,
-            cell5 = row.insertCell();
+
+        let cell5 = row.insertCell();
         cell5.style.border = "1px solid black";
         cell5.innerHTML = `Gekauft am ${date}`;
 

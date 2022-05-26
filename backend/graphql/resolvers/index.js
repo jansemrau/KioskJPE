@@ -2,7 +2,20 @@ const loadDB = require("../../mongodb");
 let ObjectId = require("mongodb").ObjectID;
 
 const resolverFunctions = {
-    getAllProducts: async (args) => {
+    checkConnection: async () => {
+        try {
+            const db = await loadDB();
+            if (!db) {
+                throw error;
+            } else {
+                return "success";
+            }
+        } catch (error) {
+            console.err(error);
+            throw error;
+        }
+    },
+    getAllProducts: async () => {
         try {
             const db = await loadDB();
             let productsFetches = await db
@@ -18,10 +31,11 @@ const resolverFunctions = {
                 };
             });
         } catch (error) {
+            console.err(error);
             throw error;
         }
     },
-    getAllParticipants: async (args) => {
+    getAllParticipants: async () => {
         try {
             const db = await loadDB();
             const participantsFetches = await db
@@ -40,6 +54,7 @@ const resolverFunctions = {
                 };
             });
         } catch (error) {
+            console.err(error);
             throw error;
         }
     },
@@ -47,12 +62,13 @@ const resolverFunctions = {
         try {
             const { name, price } = args;
             const db = await loadDB();
-            let newProduct = await db.collection("Products").insertOne({
+            await db.collection("Products").insertOne({
                 name: name,
                 price: price,
             });
             return "Product created";
         } catch (error) {
+            console.err(error);
             throw error;
         }
     },
@@ -61,13 +77,14 @@ const resolverFunctions = {
         try {
             const { firstname, lastname, credit } = args;
             const db = await loadDB();
-            let newParticipant = await db.collection("Participants").insertOne({
+            await db.collection("Participants").insertOne({
                 firstname: firstname,
                 lastname: lastname,
                 credit: credit,
             });
             return "Participant created";
         } catch (error) {
+            console.err(error);
             throw error;
         }
     },
@@ -78,6 +95,7 @@ const resolverFunctions = {
             db.collection("Participants").deleteOne({ _id: ObjectId(id) });
             return "Participant deleted";
         } catch (error) {
+            console.err(error);
             throw error;
         }
     },
@@ -88,6 +106,7 @@ const resolverFunctions = {
             db.collection("Products").deleteOne({ _id: ObjectId(id) });
             return "Product deleted";
         } catch (error) {
+            console.err(error);
             throw error;
         }
     },
@@ -96,7 +115,7 @@ const resolverFunctions = {
             const id = args.id;
             const creditNew = args.credit;
             const db = await loadDB();
-            const result = await db.collection("Participants").update(
+            await db.collection("Participants").update(
                 {
                     _id: ObjectId(id),
                 },
@@ -106,6 +125,7 @@ const resolverFunctions = {
             );
             return "Guthaben geupdated";
         } catch (error) {
+            console.err(error);
             throw error;
         }
     },
@@ -115,7 +135,7 @@ const resolverFunctions = {
             const signature = args.signature;
             const datePayment = args.datePayment;
             const db = await loadDB();
-            const result = await db.collection("Participants").update(
+            await db.collection("Participants").update(
                 {
                     _id: ObjectId(id),
                 },
@@ -128,6 +148,8 @@ const resolverFunctions = {
             );
             return "Unterschrift geupdated";
         } catch (error) {
+            console.err(error);
+            console.err(error);
             throw error;
         }
     },
@@ -139,11 +161,10 @@ const resolverFunctions = {
                 e.userID = ObjectId(e.userID);
             });
             const db = await loadDB();
-            let newPurchases = await db
-                .collection("Purchases")
-                .insertMany(entries);
+            await db.collection("Purchases").insertMany(entries);
             return "Purchases created";
         } catch (error) {
+            console.err(error);
             throw error;
         }
     },
@@ -191,12 +212,14 @@ const resolverFunctions = {
                 };
             });
         } catch (error) {
+            console.err(error);
             throw error;
         }
     },
 };
 
 module.exports = {
+    checkConnection: resolverFunctions.checkConnection,
     getAllParticipants: resolverFunctions.getAllParticipants,
     getAllProducts: resolverFunctions.getAllProducts,
     updateCredit: resolverFunctions.updateCredit,
