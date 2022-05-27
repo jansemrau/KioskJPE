@@ -365,9 +365,7 @@ const newProduct = async (event) => {
                 },
             }),
         }).then((response) => {
-            response.json().then((parsedJson) => {
-                location.reload();
-            });
+            location.reload();
         });
     } else {
         alert("Keinen gültigen Preis eingegeben, bitte neu eingeben");
