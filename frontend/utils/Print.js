@@ -89,10 +89,7 @@ const printParticipants = async () => {
                     }
                 }`,
         }),
-    }).then((response) => {
-        response.json().then((parsedJson) => {
-            participants = parsedJson.data.getAllParticipants;
-            createPrintableTable(newWin);
-        });
+    }).then(() => {
+        createPrintableTable(newWin);
     });
 };

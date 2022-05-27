@@ -68,6 +68,32 @@ const getAllParticipants = async () => {
 };
 
 const save = async () => {
+    let connection;
+    fetch(`${path}/graphql`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+        },
+        body: JSON.stringify({
+            query: `{ checkConnection }`,
+        }),
+    })
+        .then(handleErrors)
+        .then((response) => {
+            response.json().then((parsedJson) => {
+                connection = parsedJson.data.checkConnection;
+                if (connection == "success") {
+                    connection = true;
+                }
+            });
+        })
+        .catch((error) => {
+            //Here is still promise
+            console.log(error);
+            errorElement(error);
+        });
+    //if (connection) {
     await fetch(`${path}/graphql`, {
         method: "POST",
         headers: {
@@ -85,7 +111,6 @@ const save = async () => {
         }),
     })
         .then(handleErrors)
-
         .catch((error) => {
             //Here is still promise
             console.log(error);
@@ -105,12 +130,18 @@ const save = async () => {
                 entries: purchases,
             },
         }),
-    }).then((response) => {
-        response.json().then((parsedJson) => {
+    })
+        .then(handleErrors)
+        .then(() => {
             clear();
             getAllParticipants();
+        })
+        .catch((error) => {
+            //Here is still promise
+            console.log(error);
+            errorElement(error);
         });
-    });
+    // }
 };
 
 const getAllProducts = async () => {
@@ -196,7 +227,6 @@ const lineInsertParticipant = () => {
                     ) {
                         clearShopping();
                         selection(
-                            this.getAttribute("personId"),
                             this.getAttribute("credit"),
                             this.getAttribute("participantName")
                         );
@@ -205,7 +235,6 @@ const lineInsertParticipant = () => {
                 } else {
                     clearShopping();
                     selection(
-                        this.getAttribute("personId"),
                         this.getAttribute("credit"),
                         this.getAttribute("participantName")
                     );
@@ -256,7 +285,7 @@ function lineInfoPurchase(articleId, articleName, price) {
     }
 }
 
-const selection = (personId, credit, name) => {
+const selection = (credit, name) => {
     creditOld = credit;
     creditNew = creditOld;
     document.getElementById("participantName").innerHTML = name;
