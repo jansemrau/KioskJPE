@@ -52,7 +52,6 @@ const createPurchasePrintableTable = (newWin) => {
             ":" +
             ("0" + dateOld.getMinutes()).slice(-2) +
             " Uhr";
-
         let cell5 = row.insertCell();
         cell5.style.border = "1px solid black";
         cell5.innerHTML = `Gekauft am ${date}`;
