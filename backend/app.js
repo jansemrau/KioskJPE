@@ -33,7 +33,7 @@ const limiter = rateLimit({
 });
 app.use("/api", limiter);
 
-app.use(function (req, res, next) {
+app.use(function (req, res) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "*");
     res.header(
@@ -43,7 +43,6 @@ app.use(function (req, res, next) {
     if (req.method === "OPTIONS") {
         return res.status(200).end();
     }
-    next();
 });
 
 // Body parser, reading data from body into req.body
@@ -62,7 +61,7 @@ app.use(xss());
 app.use(express.static(`${__dirname}/public`));
 
 // Test middleware
-app.use((req, res, next) => {
+app.use((req, next) => {
     req.requestTime = new Date().toISOString();
     next();
 });
@@ -78,7 +77,7 @@ app.use(
 // 3) ROUTES
 app.use("/auth", authRouter);
 
-app.all("*", (req, res, next) => {
+app.all("*", (req, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 

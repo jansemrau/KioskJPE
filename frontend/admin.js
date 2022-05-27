@@ -58,10 +58,8 @@ const newParticipant = async () => {
                     credit: credit,
                 },
             }),
-        }).then((response) => {
-            response.json().then((parsedJson) => {
-                location.reload();
-            });
+        }).then(() => {
+            location.reload();
         });
     } else {
         alert("Kein gültiges Guthaben eingegeben, bitte neu eingeben");
@@ -85,7 +83,7 @@ const deleteParticipant = async (id) => {
                 id: id,
             },
         }),
-    }).then((response) => {
+    }).then(() => {
         location.reload();
     });
 };
@@ -108,10 +106,8 @@ const payOut = async (currentId, dataUrl) => {
                 datePayment: date,
             },
         }),
-    }).then((response) => {
-        response.json().then((parsedJson) => {
-            location.reload();
-        });
+    }).then(() => {
+        location.reload();
     });
 };
 
@@ -364,7 +360,7 @@ const newProduct = async (event) => {
                     price: price,
                 },
             }),
-        }).then((response) => {
+        }).then(() => {
             location.reload();
         });
     } else {
@@ -388,7 +384,7 @@ const deleteProduct = async (id) => {
                 id: id,
             },
         }),
-    }).then((response) => {
+    }).then(() => {
         location.reload();
     });
 };
