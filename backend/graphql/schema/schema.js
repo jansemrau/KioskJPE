@@ -29,7 +29,6 @@ module.exports = buildSchema(`
        date: Float
      }
       type Query {
-        checkConnection: String
         getAllParticipants: [Participant]
         getAllProducts: [Product]
         getAllPurchases(userID: String): [AllPurchases]

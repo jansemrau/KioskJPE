@@ -7,7 +7,7 @@ const signature = (currentId) => {
             window.mozRequestAnimationFrame ||
             window.oRequestAnimationFrame ||
             window.msRequestAnimaitonFrame ||
-            function () {
+            function (callback) {
                 window.setTimeout(callback, 1000 / 60);
             }
         );
@@ -41,7 +41,7 @@ const signature = (currentId) => {
 
     canvas.addEventListener(
         "mouseup",
-        function () {
+        function (e) {
             drawing = false;
         },
         false
@@ -163,14 +163,14 @@ const signature = (currentId) => {
     var submitBtn = document.getElementById("sig-submitBtn");
     clearBtn.addEventListener(
         "click",
-        function () {
+        function (e) {
             clearCanvas();
         },
         false
     );
     submitBtn.addEventListener(
         "click",
-        function () {
+        function (e) {
             var dataUrl = canvas.toDataURL();
             payOut(currentId, dataUrl);
         },

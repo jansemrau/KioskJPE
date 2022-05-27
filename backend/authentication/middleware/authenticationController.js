@@ -10,7 +10,7 @@ const userValidation = require("../validation/user");
 
 const config = process.env;
 
-exports.verifyToken = (req, res) => {
+exports.verifyToken = (req, res, next) => {
     const token =
         req.body.token || req.query.token || req.headers["x-access-token"];
 
@@ -28,7 +28,7 @@ exports.verifyToken = (req, res) => {
     });
 };
 
-exports.register = catchAsync(async (req, res) => {
+exports.register = catchAsync(async (req, res, next) => {
     // Our register logic starts here
     try {
         // Get user input
@@ -72,7 +72,7 @@ exports.register = catchAsync(async (req, res) => {
         // save user token
         user.token = token;
 
-        // returns new user
+        // return new user
         return res.status(201).json({
             status: "success",
             data: {
@@ -85,7 +85,7 @@ exports.register = catchAsync(async (req, res) => {
     // Our register logic ends here
 });
 
-exports.login = catchAsync(async (req, res) => {
+exports.login = catchAsync(async (req, res, next) => {
     // Our login logic starts here
     try {
         // Get user input
@@ -127,7 +127,7 @@ exports.login = catchAsync(async (req, res) => {
     // Our login logic ends here
 });
 
-exports.forgotPassword = catchAsync(async (res) => {
+exports.forgotPassword = catchAsync(async (req, res, next) => {
     res.send(
         '<form action="http://localhost:8000/auth/passwordreset" method="POST" onsubmit="return false;">' +
             '<input type="email" name="email" value="" placeholder="Enter your email address..." />' +
@@ -136,7 +136,7 @@ exports.forgotPassword = catchAsync(async (res) => {
     );
 });
 
-exports.passwordReset = catchAsync(async (req, res) => {
+exports.passwordReset = catchAsync(async (req, res, next) => {
     if (req.body.email !== undefined) {
         var email = req.body.email;
 
@@ -171,7 +171,7 @@ exports.passwordReset = catchAsync(async (req, res) => {
     }
 });
 
-exports.resetPassword = catchAsync(async (req, res) => {
+exports.resetPassword = catchAsync(async (req, res, next) => {
     // req.params.id
     const db = await loadDB();
     const user = await db
@@ -197,7 +197,7 @@ exports.resetPassword = catchAsync(async (req, res) => {
     );
 });
 
-exports.newPassword = catchAsync(async (req, res) => {
+exports.newPassword = catchAsync(async (req, res, next) => {
     // req.body.id
     const db = await loadDB();
     const user = await db
@@ -205,7 +205,6 @@ exports.newPassword = catchAsync(async (req, res) => {
         .findOne({ _id: mongo.ObjectId(req.body.id) });
     var secret = user.password + "-" + new Date().getTime();
 
-    //Todo What does the Paylaod
     var payload = jwt.decode(req.body.token, secret);
     let encryptedUserPassword = await bcrypt.hash(req.body.password, 10);
     await db
