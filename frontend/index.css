@@ -3,9 +3,6 @@
     margin: 0;
     padding: 0;
 }
-:root {
-    --app-height: 100%;
-}
 
 html {
     height: -webkit-fill-available;
