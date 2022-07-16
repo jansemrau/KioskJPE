@@ -8,10 +8,9 @@ html {
     height: 100vh;
     height: -moz-available; /* WebKit-based browsers will ignore this. */
 }
-_::-webkit-full-page-media,
-_:future,
+
 :root .safari_only {
-    height: auto;
+    height: -webkit-fill-available;
 }
 
 body {
