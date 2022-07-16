@@ -5,13 +5,11 @@
 }
 
 html {
-    height: 100vh;
-    height: -moz-available; /* WebKit-based browsers will ignore this. */
+    height: auto;
 }
 
 body {
-    height: 100vh;
-    height: -moz-available; /* WebKit-based browsers will ignore this. */
+    height: auto;
 }
 /** Breakpoint: 576px+ */
 @media (min-width: 36em) {
