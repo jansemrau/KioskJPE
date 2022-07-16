@@ -32,19 +32,7 @@ body {
 /** Breakpoint: 1400px+ */
 @media (min-width: 87.5em) {
 }
-@media (max-width: 75em) {
-    html {
-        height: 100vh;
-        height: -webkit-fill-available;
-        height: -moz-available; /* WebKit-based browsers will ignore this. */
-    }
 
-    body {
-        height: 100vh;
-        height: -webkit-fill-available;
-        height: -moz-available; /* WebKit-based browsers will ignore this. */
-    }
-}
 .container {
     width: 100%;
     height: 100%;
