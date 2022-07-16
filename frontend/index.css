@@ -5,16 +5,12 @@
 }
 
 html {
-    height: 100vh;
+    height: calc(100vh - calc(100vh - 100%));
     height: -moz-available; /* WebKit-based browsers will ignore this. */
 }
 
-:root .safari_only {
-    height: -webkit-fill-available;
-}
-
 body {
-    height: 100vh;
+    height: calc(100vh - calc(100vh - 100%));
     height: -moz-available; /* WebKit-based browsers will ignore this. */
 }
 /** Breakpoint: 576px+ */
