@@ -32,7 +32,7 @@ body {
 /** Breakpoint: 1400px+ */
 @media (min-width: 87.5em) {
 }
-@media (max-width: 75em) {
+@media (max-width: 62em) {
     html {
         height: -webkit-fill-available;
         height: -moz-available; /* WebKit-based browsers will ignore this. */
