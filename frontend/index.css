@@ -12,6 +12,7 @@ html {
 body {
     height: calc(100vh - calc(100vh - 100%));
     height: -moz-available; /* WebKit-based browsers will ignore this. */
+    touch-action: manipulation;
 }
 /** Breakpoint: 576px+ */
 @media (min-width: 36em) {
