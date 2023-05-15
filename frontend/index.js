@@ -22,7 +22,7 @@ const validateUser = async () => {
         console.log(response);
         if (response.status === 401 || response.status === 403) {
             console.log("not authenticated");
-            window.location.href = `${path}/authentication`;
+            window.location.href = `${path}/authenticationkiosk`;
         }
     });
 };
